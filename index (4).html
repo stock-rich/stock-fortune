@@ -1,0 +1,1871 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>股市天機閣 — 三派合一股票占卜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;700&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --gold: #c9a84c;
+  --gold-light: #e8d5a3;
+  --gold-dark: #8a6c2a;
+  --ink: #1a1208;
+  --ink-light: #3d2f0f;
+  --paper: #fdf6e3;
+  --paper-dark: #f5e9c8;
+  --red: #8b1a1a;
+  --red-light: #c0392b;
+  --teal: #1a5a5a;
+  --teal-light: #2ecc71;
+  --gray: #888;
+  --border: rgba(201,168,76,0.3);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: 'Noto Sans TC', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Background pattern */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(201,168,76,0.04) 39px, rgba(201,168,76,0.04) 40px),
+    repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(201,168,76,0.04) 39px, rgba(201,168,76,0.04) 40px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.container { max-width: 720px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
+
+/* Header */
+.header { text-align: center; padding: 3rem 0 2rem; }
+.header h1 {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: .05em;
+  line-height: 1.2;
+  margin-bottom: .75rem;
+  text-shadow: 0 0 40px rgba(201,168,76,0.3);
+}
+.header-sub {
+  font-size: 13px;
+  color: rgba(253,246,227,0.5);
+  letter-spacing: .05em;
+}
+
+/* Market mood banner */
+.mood-banner {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 18px;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  transition: background .4s;
+}
+.mood-sky-icon { font-size: 28px; flex-shrink: 0; line-height: 1; }
+.mood-sky-body { flex: 1; }
+.mood-sky-title { font-family: 'Noto Serif TC', serif; font-size: 14px; color: var(--gold-light); margin-bottom: 3px; }
+.mood-sky-desc { font-size: 12px; color: rgba(253,246,227,0.45); line-height: 1.5; }
+.mood-sky-right { text-align: right; flex-shrink: 0; }
+.mood-sky-tone { font-family: 'Noto Serif TC', serif; font-size: 12px; padding: 3px 12px; border-radius: 2px; display: inline-block; margin-bottom: 4px; }
+.mood-sky-index { font-size: 11px; color: rgba(253,246,227,0.35); }
+.sky-sunny   { background: rgba(201,150,30,0.08); border-color: rgba(201,150,30,0.4); }
+.sky-cloudy  { background: rgba(160,130,60,0.07); border-color: rgba(160,130,60,0.3); }
+.sky-overcast{ background: rgba(70,70,100,0.12);  border-color: rgba(100,100,130,0.3); }
+.sky-storm   { background: rgba(20,40,70,0.2);    border-color: rgba(40,70,110,0.4); }
+.tone-bull   { background: rgba(139,26,26,0.25); color:#e88; border:1px solid rgba(139,26,26,0.35); }
+.tone-mixed  { background: rgba(130,90,0,0.25);  color:#ec8; border:1px solid rgba(130,90,0,0.35); }
+.tone-caution{ background: rgba(60,60,90,0.3);   color:#aac; border:1px solid rgba(60,60,90,0.4); }
+.tone-bear   { background: rgba(26,60,90,0.3);   color:#8be; border:1px solid rgba(26,60,90,0.4); }
+
+/* Search */
+.search-wrap { margin-bottom: 2.5rem; }
+.search-inner { display: flex; gap: 10px; }
+.search-inner input {
+  flex: 1;
+  background: rgba(253,246,227,0.06);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-size: 15px;
+  color: var(--paper);
+  font-family: 'Noto Sans TC', sans-serif;
+  outline: none;
+  transition: border-color .2s;
+}
+.search-inner input:focus { border-color: var(--gold); }
+.search-inner input::placeholder { color: rgba(253,246,227,0.3); }
+.search-inner button {
+  background: var(--gold);
+  border: none;
+  border-radius: 4px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  font-family: 'Noto Serif TC', serif;
+  letter-spacing: .05em;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.search-inner button:hover { background: var(--gold-light); }
+.search-inner button:active { transform: scale(.97); }
+.search-hint { font-size: 11px; color: rgba(253,246,227,0.3); margin-top: 8px; letter-spacing: .03em; }
+
+/* Loading — trigram wheel */
+.loading { text-align: center; padding: 3rem; display: none; }
+.wheel-wrap {
+  position: relative;
+  width: 120px; height: 120px;
+  margin: 0 auto 1.5rem;
+}
+.wheel-ring {
+  position: absolute;
+  border-radius: 50%;
+  border-style: solid;
+  border-color: transparent;
+  inset: 0;
+}
+.wheel-ring-outer {
+  border-width: 2px;
+  border-top-color: var(--gold);
+  border-right-color: rgba(201,168,76,0.3);
+  animation: spin 1.6s linear infinite;
+}
+.wheel-ring-mid {
+  inset: 16px;
+  border-width: 1.5px;
+  border-top-color: rgba(201,168,76,0.6);
+  border-left-color: rgba(201,168,76,0.25);
+  animation: spin 2.4s linear infinite reverse;
+}
+.wheel-core {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: var(--gold);
+  animation: pulse 2s ease-in-out infinite;
+}
+.wheel-gua {
+  position: absolute;
+  top: -22px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  color: rgba(201,168,76,0.5);
+  animation: guaSpin 0.35s steps(1) infinite;
+  font-family: serif;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+@keyframes guaSpin {
+  0%  { content:'䷀'; opacity:.4; }
+  12% { content:'䷁'; opacity:.6; }
+  25% { content:'䷂'; opacity:.5; }
+  37% { content:'䷃'; opacity:.7; }
+  50% { content:'䷄'; opacity:.4; }
+  62% { content:'䷅'; opacity:.6; }
+  75% { content:'䷆'; opacity:.5; }
+  87% { content:'䷇'; opacity:.7; }
+}
+.loading-text { font-family: 'Noto Serif TC', serif; color: var(--gold-light); font-size: 14px; margin-top: .5rem; }
+.loading-step { font-size: 12px; color: rgba(253,246,227,0.4); margin-top: 6px; min-height: 18px; }
+
+/* Result */
+.result { display: none; animation: fadeIn .4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Stock header */
+.stock-header {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  background: rgba(201,168,76,0.04);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.stock-name-wrap {}
+.stock-name { font-family: 'Noto Serif TC', serif; font-size: 20px; color: var(--gold); margin-bottom: 4px; }
+.stock-tagline { font-size: 12px; color: rgba(253,246,227,0.45); }
+.stock-verdict {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 13px;
+  padding: 5px 14px;
+  border-radius: 2px;
+}
+.v-great { background: rgba(139,26,26,0.3); border: 1px solid rgba(139,26,26,0.5); color: #e88; }
+.v-good { background: rgba(26,90,90,0.3); border: 1px solid rgba(26,90,90,0.5); color: #8dd; }
+.v-caution { background: rgba(180,130,0,0.2); border: 1px solid rgba(180,130,0,0.4); color: #e8c; }
+
+/* Name analysis */
+.section-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 11px;
+  letter-spacing: .15em;
+  color: rgba(201,168,76,0.6);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.name-chars { display: flex; gap: 10px; margin-bottom: 1.5rem; }
+.name-char {
+  flex: 1;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 14px 10px;
+  text-align: center;
+  background: rgba(201,168,76,0.03);
+}
+.char-glyph {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 32px;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 6px;
+  line-height: 1;
+}
+.char-strokes { font-size: 11px; color: rgba(253,246,227,0.4); margin-bottom: 6px; }
+.element-pill {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.ep-fire { background: rgba(139,26,26,0.35); color: #f99; border: 1px solid rgba(139,26,26,0.4); }
+.ep-earth { background: rgba(130,90,0,0.35); color: #e8b; border: 1px solid rgba(130,90,0,0.4); }
+.ep-metal { background: rgba(120,120,140,0.35); color: #cce; border: 1px solid rgba(120,120,140,0.4); }
+.ep-water { background: rgba(20,60,100,0.45); color: #8bf; border: 1px solid rgba(20,60,100,0.5); }
+.ep-wood { background: rgba(30,90,30,0.35); color: #8e8; border: 1px solid rgba(30,90,30,0.4); }
+.char-meaning { font-size: 11px; color: rgba(253,246,227,0.35); margin-top: 6px; line-height: 1.4; }
+
+/* Three talent grid */
+.talent-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 1.5rem; }
+.talent-cell {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px;
+  text-align: center;
+  background: rgba(201,168,76,0.03);
+}
+.talent-label { font-size: 10px; color: rgba(253,246,227,0.4); margin-bottom: 4px; }
+.talent-num { font-family: 'Noto Serif TC', serif; font-size: 20px; color: var(--gold-light); margin-bottom: 2px; }
+.talent-name { font-size: 11px; color: rgba(253,246,227,0.6); margin-bottom: 4px; }
+.talent-luck {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.tl-great { background: rgba(139,26,26,0.3); color: #e88; }
+.tl-good { background: rgba(26,90,26,0.3); color: #8e8; }
+.tl-mid { background: rgba(130,90,0,0.3); color: #ec8; }
+.tl-bad { background: rgba(60,60,90,0.4); color: #aac; }
+
+/* Market & finance */
+.data-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 1.5rem; }
+.data-cell {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 10px 12px;
+  background: rgba(201,168,76,0.03);
+}
+.data-label { font-size: 10px; color: rgba(253,246,227,0.4); margin-bottom: 4px; }
+.data-val { font-size: 15px; font-weight: 500; color: var(--paper); }
+.data-val.bull { color: #e88; }
+.data-val.bear { color: #8e8; }
+
+/* Tabs */
+.tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
+.tab {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 13px;
+  padding: 10px 20px;
+  color: rgba(253,246,227,0.4);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  letter-spacing: .05em;
+  transition: all .15s;
+}
+.tab:hover { color: var(--gold-light); }
+.tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* Fortune card */
+.fortune-card {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  background: rgba(201,168,76,0.03);
+  position: relative;
+  overflow: hidden;
+}
+.fortune-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: var(--gold);
+  opacity: .4;
+}
+.fortune-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+.fortune-gua { font-family: 'Noto Serif TC', serif; font-size: 15px; color: var(--gold-light); margin-bottom: 3px; }
+.fortune-sub { font-size: 11px; color: rgba(253,246,227,0.4); }
+.stars-wrap { text-align: right; flex-shrink: 0; }
+.stars { font-size: 14px; letter-spacing: 2px; display: block; margin-bottom: 2px; }
+.stars-label { font-size: 11px; color: rgba(253,246,227,0.4); }
+
+.fortune-text {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 14px;
+  line-height: 2;
+  color: rgba(253,246,227,0.8);
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  border: 1px solid rgba(201,168,76,0.12);
+  border-radius: 2px;
+  background: rgba(0,0,0,0.15);
+}
+
+/* Punchline */
+.punchline {
+  background: rgba(139,26,26,0.15);
+  border: 1px solid rgba(139,26,26,0.3);
+  border-radius: 2px;
+  padding: 10px 14px;
+  font-family: 'Noto Serif TC', serif;
+  font-size: 13px;
+  color: #e8b8b8;
+  margin-bottom: 1rem;
+  line-height: 1.7;
+}
+.punchline::before { content: '☯ 天師忠告：'; opacity: .7; }
+
+/* Conservative punchline for bearish market */
+.punchline.conservative {
+  background: rgba(26,90,90,0.15);
+  border-color: rgba(26,90,90,0.3);
+  color: #b8e8e8;
+}
+
+/* Signals */
+.signals { display: flex; gap: 6px; flex-wrap: wrap; }
+.sig {
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 2px;
+  letter-spacing: .03em;
+}
+.s-bull { background: rgba(139,26,26,0.25); border: 1px solid rgba(139,26,26,0.35); color: #e88; }
+.s-bear { background: rgba(26,90,26,0.25); border: 1px solid rgba(26,90,26,0.35); color: #8e8; }
+.s-mid { background: rgba(130,90,0,0.25); border: 1px solid rgba(130,90,0,0.35); color: #ec8; }
+.s-gray { background: rgba(80,80,80,0.25); border: 1px solid rgba(80,80,80,0.35); color: #aaa; }
+
+/* Verdict conclusion box */
+.verdict-box {
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1rem 1.25rem;
+  margin-top: 1rem;
+  background: rgba(0,0,0,0.2);
+}
+.verdict-box-title {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: rgba(201,168,76,0.55);
+  margin-bottom: 10px;
+}
+.verdict-action {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.verdict-pill {
+  font-family: 'Noto Serif TC', serif;
+  font-size: 13px;
+  padding: 4px 16px;
+  border-radius: 2px;
+  flex-shrink: 0;
+  font-weight: 500;
+}
+.vp-buy    { background: rgba(139,26,26,0.3); border:1px solid rgba(139,26,26,0.5); color:#f99; }
+.vp-hold   { background: rgba(130,90,0,0.3);  border:1px solid rgba(130,90,0,0.5);  color:#fc9; }
+.vp-watch  { background: rgba(60,60,90,0.3);  border:1px solid rgba(60,60,90,0.5);  color:#aac; }
+.vp-avoid  { background: rgba(26,60,90,0.3);  border:1px solid rgba(26,60,90,0.5);  color:#8be; }
+.verdict-reason { font-size: 13px; color: rgba(253,246,227,0.6); line-height: 1.6; font-family: 'Noto Serif TC', serif; }
+.verdict-condition { font-size: 12px; color: rgba(253,246,227,0.35); margin-top: 6px; padding-top: 8px; border-top: 1px solid rgba(201,168,76,0.1); line-height: 1.6; }
+.disclaimer {
+  font-size: 11px;
+  color: rgba(253,246,227,0.2);
+  line-height: 1.8;
+  margin-top: 2rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.panel { display: none; }
+.panel.show { display: block; }
+
+/* Divider gua symbol */
+.gua-divider {
+  text-align: center;
+  color: rgba(201,168,76,0.2);
+  font-size: 24px;
+  margin: 2rem 0;
+  letter-spacing: 8px;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header">
+    <h1>股市天機閣</h1>
+    <p class="header-sub">姓名學 · 易經卦象 · 干支五行 · 四派合一，散戶救星</p>
+  </div>
+
+  <div class="mood-banner sky-sunny" id="moodBanner">
+    <div class="mood-sky-icon" id="moodIcon">☀️</div>
+    <div class="mood-sky-body">
+      <p class="mood-sky-title" id="moodLabel">今日天色：晴空萬里，財神當道</p>
+      <p class="mood-sky-desc" id="moodDesc">大盤氣場載入中...</p>
+    </div>
+    <div class="mood-sky-right">
+      <div class="mood-sky-tone tone-bull" id="moodTone">積極出擊</div>
+    </div>
+  </div>
+
+  <div class="search-wrap">
+    <div class="search-inner">
+      <input type="text" id="stockInput" placeholder="輸入股票名稱，例如：台積電、鴻海、國泰金" maxlength="10"
+        oninput="this.value=this.value.replace(/[^\u4e00-\u9fff]/g,'')"/>
+      <button onclick="startFortune()">四派合算</button>
+    </div>
+    <p class="search-hint">＊ 天師今日已為 3,721 位散戶指點迷津（成效不一，概不負責）</p>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="wheel-wrap">
+      <div class="wheel-ring wheel-ring-outer"></div>
+      <div class="wheel-ring wheel-ring-mid"></div>
+      <div class="wheel-core">☯</div>
+      <div class="wheel-gua" id="wheelGua">䷀</div>
+    </div>
+    <p class="loading-text" id="loadText">天師正在燃香卜卦</p>
+    <p class="loading-step" id="loadStep"></p>
+  </div>
+
+  <div class="result" id="result">
+
+    <div class="stock-header">
+      <div class="stock-name-wrap">
+        <p class="stock-name" id="rStockName">台積電（2330）</p>
+        <p class="stock-tagline" id="rStockTag">半導體護國神山 · 貴人星最旺之股 · 散戶的精神支柱</p>
+      </div>
+      <span class="stock-verdict v-great" id="rVerdict">命格：大富大貴局</span>
+    </div>
+
+    <p class="section-title">姓名學鑑定 — 公司名三才剖析</p>
+    <div class="name-chars" id="nameChars"></div>
+
+    <p class="section-title">三才格局</p>
+    <div class="talent-grid" id="talentGrid"></div>
+
+    <p class="section-title">今日天象 × 現代指標</p>
+    <div class="data-grid" id="dataGrid"></div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="swTab(0,this)">今日運勢</button>
+      <button class="tab" onclick="swTab(1,this)">本週運勢</button>
+      <button class="tab" onclick="swTab(2,this)">本月運勢</button>
+    </div>
+
+    <div id="tab0" class="panel show"></div>
+    <div id="tab1" class="panel"></div>
+    <div id="tab2" class="panel"></div>
+
+    <p class="disclaimer">
+      本站所有批文純屬娛樂，姓名學依熊崎式筆畫計算，與正統各派可能有所出入，天師概不受理投訴。<br/>
+      財務數據僅供參考，不構成任何投資建議。虧損概不負責，獲利請來廟裡還願，香油錢隨喜。
+    </p>
+  </div>
+
+  <div class="gua-divider">☯ ䷀ ䷁ ☯</div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// Fugle API 設定（申請後填入）
+// ═══════════════════════════════════════
+const FUGLE_API_KEY = 'NjEyYWI0ZjItODM5Yi00OGQyLWExNTktZDM0M2Y3OTI1NzkyIGQyNzNmOTI3LTRiYjctNDlkZi05MzJlLWQwNjQ1YjJjOGRhYw=='; // 在 https://developer.fugle.tw 申請
+
+// ═══════════════════════════════════════
+// 股票名稱快取（動態從 API 取得後存這裡）
+// ═══════════════════════════════════════
+const STOCK_CACHE = {};
+
+// 預設熱門股標語（有這個代號就用這個，沒有就用通用標語）
+const STOCK_TAGS = {
+  '2330':'半導體護國神山 · 貴人星最旺之股 · 散戶的精神支柱',
+  '2454':'手機晶片龍頭 · 台灣的低調富豪 · IC設計一哥',
+  '2317':'代工帝國 · 從螺絲起家 · 現在連電動車都做',
+  '2382':'筆電代工大廠 · AI伺服器新寵兒',
+  '2881':'金融龍頭 · 台灣最大保險集團',
+  '2882':'國泰金融帝國 · 保險業龍頭',
+  '2886':'兆豐金控 · 公股銀行之首',
+  '2891':'中信金控 · 民營金控龍頭',
+  '2892':'第一金控 · 老牌公股銀行',
+  '00878':'存股族的精神糧食 · 每季配息的定心丸',
+  '00929':'復華台灣科技優息 · 月月配的新寵兒',
+  '00919':'群益台灣精選高息 · 存股新星',
+  '0050':'台灣最古老的ETF · 買台灣就買它',
+  '0056':'高股息ETF先驅 · 存股族老戰友',
+  '2303':'成熟製程龍頭 · 台積電的好鄰居',
+  '2412':'電信龍頭 · 存股族的老情人',
+  '2308':'電源供應器王者 · 綠能先行者',
+  '2357':'華碩 · 品牌筆電的驕傲',
+  '2327':'國巨 · 被動元件的帝王',
+  '3008':'大立光 · 全球手機鏡頭王者',
+  '2379':'瑞昱 · 網路晶片的隱形冠軍',
+  '2395':'研華 · 工業電腦的世界第一',
+  '6505':'台塑化 · 石化業的定海神針',
+  '1301':'台塑 · 化工業的老前輩',
+  '1303':'南亞 · 台塑集團的左右手',
+  '2002':'中鋼 · 鋼鐵業的護國神山',
+  '2207':'和泰車 · 豐田在台灣的代言人',
+  '2912':'統一超 · 便利商店的天下第一',
+  '2105':'正新 · 台灣輪胎之王',
+};
+
+// 股票名稱 → 代號對照表（支援直接輸入中文名稱查詢）
+const NAME_TO_CODE = {
+  '台積電':'2330','台積':'2330',
+  '聯發科':'2454','聯發':'2454',
+  '鴻海':'2317',
+  '廣達':'2382',
+  '富邦金':'2881','富邦':'2881',
+  '國泰金':'2882','國泰':'2882',
+  '兆豐金':'2886','兆豐':'2886',
+  '中信金':'2891','中信':'2891',
+  '第一金':'2892',
+  '國泰永續高股息':'00878',
+  '復華台灣科技優息':'00929',
+  '群益台灣精選高息':'00919',
+  '元大台灣50':'0050','台灣50':'0050',
+  '元大高股息':'0056','高股息':'0056',
+  '聯電':'2303',
+  '中華電':'2412','中華電信':'2412',
+  '台達電':'2308',
+  '華碩':'2357',
+  '國巨':'2327',
+  '大立光':'3008',
+  '瑞昱':'2379',
+  '研華':'2395',
+  '台塑化':'6505',
+  '台塑':'1301',
+  '南亞':'1303',
+  '中鋼':'2002',
+  '和泰車':'2207','和泰':'2207',
+  '統一超':'2912','統一超商':'2912','711':'2912',
+  '正新':'2105',
+  '台灣大':'3045','台灣大哥大':'3045',
+  '遠傳':'4904','遠傳電信':'4904',
+  '統一企業':'1216','統一':'1216',
+  '味全':'1201',
+  '台糖':'1702',
+  '中華汽車':'2204',
+  '裕隆':'2201',
+  '台泥':'1101',
+  '亞泥':'1102',
+  '長榮':'2603','長榮航空':'2618',
+  '陽明':'2609',
+  '萬海':'2615',
+  '日月光':'3711','日月光投控':'3711',
+  '南電':'8046',
+  '欣興':'3037',
+  '景碩':'3189',
+  '奇美實業':'4906',
+  '友達':'2409',
+  '群創':'3481',
+  '彩晶':'6116',
+  '力晶':'5346',
+  '南科':'2408',
+  '華邦電':'2344',
+  '旺宏':'2337',
+  '茂矽':'2342',
+  '矽品':'2325',
+  '日成':'3716',
+  '威訊':'5388',
+  '聯詠':'3034',
+  '瑞鼎':'3592',
+  '凌陽':'2401',
+  '矽統':'2363',
+  '晶豪科':'3006',
+  '鈺創':'5438',
+  '力旺':'3529',
+  '世界先進':'5347',
+  '穩懋':'3105',
+  '全訊':'5222',
+  '宏捷科':'8086',
+  '台灣電路板':'4927',
+  '金像電':'2368',
+  '健策':'3653',
+  '台光電':'2383',
+};
+
+// 代號 → 中文名稱反查表（全域，供 fetchStockInfo 使用）
+const CODE_TO_NAME = Object.fromEntries(
+  Object.entries(NAME_TO_CODE).map(([name, code]) => [code, name])
+);
+function normalizeInput(raw) {
+  const trimmed = raw.trim();
+  if(!trimmed) return '';
+
+  // 直接完全比對
+  if(NAME_TO_CODE[trimmed]) return NAME_TO_CODE[trimmed];
+
+  // 模糊比對：輸入的字是某個名稱的子集，或某個名稱包含輸入
+  const match = Object.keys(NAME_TO_CODE).find(name =>
+    name.includes(trimmed) || trimmed.includes(name)
+  );
+  if(match) return NAME_TO_CODE[match];
+
+  // 找不到：原樣回傳，讓 Fugle API 嘗試
+  return trimmed;
+}
+// ═══════════════════════════════════════
+// Claude API 動態生成股票幽默標語
+// ═══════════════════════════════════════
+const TAG_CACHE = {}; // 已生成的標語快取
+
+async function generateStockTag(stockName, code) {
+  // 若快取有就直接回傳
+  if(TAG_CACHE[code]) return TAG_CACHE[code];
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 100,
+        messages: [{
+          role: 'user',
+          content: `請為台股「${stockName}」（代號${code}）生成一句幽默又貼切的標語，格式為用「·」分隔的2到3個短句，例如「半導體護國神山 · 外資的心頭好 · 散戶的精神支柱」。只要輸出標語本身，不要其他文字。`
+        }]
+      })
+    });
+
+    if(!res.ok) throw new Error('Claude API error');
+    const data = await res.json();
+    const tag = data.content?.[0]?.text?.trim() || `${stockName} · 天師細細品味中`;
+    TAG_CACHE[code] = tag;
+    return tag;
+  } catch(e) {
+    console.warn('Claude API 標語生成失敗：', e.message);
+    return `${stockName} · 天師正在研究此股命格`;
+  }
+}
+
+async function fetchStockInfo(code) {
+  if(STOCK_CACHE[code]) return STOCK_CACHE[code];
+
+  const headers = { 'X-API-KEY': FUGLE_API_KEY };
+
+  // 判斷是否在交易時間內（09:00–13:30 台灣時間）
+  const now = new Date();
+  const tw = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+  const h = tw.getHours(), m = tw.getMinutes();
+  const isMarketHours = (h > 9 || (h === 9 && m >= 0)) && (h < 13 || (h === 13 && m <= 35));
+  const isWeekday = tw.getDay() >= 1 && tw.getDay() <= 5;
+  const inSession = isWeekday && isMarketHours;
+
+  try {
+    let d = null;
+
+    // 盤中：用 intraday/quote
+    if(inSession) {
+      const res = await fetch(
+        `https://api.fugle.tw/marketdata/v1.0/stock/intraday/quote/${code}`,
+        { headers }
+      );
+      if(res.ok) d = await res.json();
+    }
+
+    // 非盤中或 intraday 失敗：改用 snapshot
+    if(!d) {
+      const res2 = await fetch(
+        `https://api.fugle.tw/marketdata/v1.0/stock/snapshot/quotes/TSE?symbols=${code}`,
+        { headers }
+      );
+      if(res2.ok) {
+        const snap = await res2.json();
+        const item = snap.data?.find(s => s.symbol === code);
+        if(item) d = item;
+      }
+    }
+
+    // snapshot 也失敗：試 OTC（上櫃）
+    if(!d) {
+      const res3 = await fetch(
+        `https://api.fugle.tw/marketdata/v1.0/stock/snapshot/quotes/OTC?symbols=${code}`,
+        { headers }
+      );
+      if(res3.ok) {
+        const snap = await res3.json();
+        const item = snap.data?.find(s => s.symbol === code);
+        if(item) d = item;
+      }
+    }
+
+    if(!d) throw new Error('查無此股票資料');
+
+    // 名稱備援：API > 離線股票表 > CODE_TO_NAME 反查 > 代號
+    const fallbackName = OFFLINE_STOCKS[code]?.name || CODE_TO_NAME[code] || code;
+    const stockName = (d.name && /[\u4e00-\u9fff]/.test(d.name)) ? d.name : fallbackName;
+
+    const vol    = d.total?.tradeVolume || d.tradeVolume || 0;
+    const volBid = d.total?.tradeVolumeAtBid || 0;
+    const volAsk = d.total?.tradeVolumeAtAsk || 0;
+
+    // 先組基本 info，tag 稍後補上
+    const info = {
+      code,
+      name:       stockName,
+      price:      d.closePrice || d.lastPrice || d.close || 0,
+      openPrice:  d.openPrice  || d.open  || 0,
+      highPrice:  d.highPrice  || d.high  || 0,
+      lowPrice:   d.lowPrice   || d.low   || 0,
+      change:     d.change     || 0,
+      changePct:  d.changePercent || d.changeRate || 0,
+      amplitude:  d.amplitude  || 0,
+      volume:     vol,
+      avgVolume:  d.avgVolume30d || vol || 1,
+      volBid,
+      volAsk,
+      high52w:    d.fiftyTwoWeekHigh || 0,
+      low52w:     d.fiftyTwoWeekLow  || 0,
+      tag:  STOCK_TAGS[code] || `${stockName} · 天師正在研究此股命格`,
+      chars: [...stockName].filter(c => /[\u4e00-\u9fff]/.test(c)),
+    };
+
+    // 若沒有預設標語，用 Claude API 動態生成
+    if(!STOCK_TAGS[code]) {
+      generateStockTag(stockName, code).then(tag => {
+        info.tag = tag;
+        // 更新快取中的 tag
+        if(STOCK_CACHE[code]) STOCK_CACHE[code].tag = tag;
+        // 更新畫面上正在顯示的標語（如果目前就是這檔）
+        const tagEl = document.getElementById('rStockTag');
+        if(tagEl && tagEl.textContent.includes('天師正在研究')) {
+          tagEl.textContent = tag;
+        }
+      });
+    }
+
+    STOCK_CACHE[code] = info;
+    return info;
+  } catch(e) {
+    console.warn('Fugle API 失敗，使用離線模式：', e.message);
+    return getOfflineStock(code);
+  }
+}
+
+// ═══════════════════════════════════════
+// 離線備援（API Key 未設定或呼叫失敗時）
+// ═══════════════════════════════════════
+const OFFLINE_STOCKS = {
+  '2330':{ name:'台積電', price:1080, changePct:2.3,  volume:35000, avgVolume:22000, volBid:21000, volAsk:14000, amplitude:2.8, openPrice:1060, highPrice:1085, lowPrice:1058 },
+  '2454':{ name:'聯發科', price:1250, changePct:1.2,  volume:8000,  avgVolume:7500,  volBid:4500,  volAsk:3500,  amplitude:1.5, openPrice:1240, highPrice:1255, lowPrice:1235 },
+  '2317':{ name:'鴻海',   price:210,  changePct:-1.8, volume:45000, avgVolume:42000, volBid:18000, volAsk:27000, amplitude:2.1, openPrice:214,  highPrice:215,  lowPrice:208  },
+  '2382':{ name:'廣達',   price:380,  changePct:3.5,  volume:18000, avgVolume:10000, volBid:12000, volAsk:6000,  amplitude:3.8, openPrice:368,  highPrice:382,  lowPrice:367  },
+  '2881':{ name:'富邦金', price:88,   changePct:0.3,  volume:18000, avgVolume:16000, volBid:9500,  volAsk:8500,  amplitude:0.6, openPrice:87.8, highPrice:88.2, lowPrice:87.6 },
+  '00878':{ name:'國泰永續高股息', price:22, changePct:0.2, volume:90000, avgVolume:85000, volBid:46000, volAsk:44000, amplitude:0.4, openPrice:21.9, highPrice:22.1, lowPrice:21.8 },
+  '0050':{ name:'元大台灣50', price:195, changePct:0.6, volume:15000, avgVolume:14000, volBid:8000, volAsk:7000, amplitude:0.8, openPrice:194, highPrice:195.5, lowPrice:193.5 },
+  '2303':{ name:'聯電',   price:62,   changePct:-0.3, volume:30000, avgVolume:28000, volBid:14000, volAsk:16000, amplitude:0.8, openPrice:62.3, highPrice:62.5, lowPrice:61.8 },
+  '2412':{ name:'中華電', price:132,  changePct:0.1,  volume:8000,  avgVolume:8500,  volBid:4100,  volAsk:3900,  amplitude:0.3, openPrice:131.5,highPrice:132.5,lowPrice:131.5 },
+  '2308':{ name:'台達電', price:420,  changePct:1.5,  volume:6000,  avgVolume:5500,  volBid:3500,  volAsk:2500,  amplitude:1.8, openPrice:415,  highPrice:421,  lowPrice:414  },
+  '3008':{ name:'大立光', price:2800, changePct:0.5,  volume:500,   avgVolume:450,   volBid:280,   volAsk:220,   amplitude:0.9, openPrice:2785, highPrice:2805, lowPrice:2780 },
+  '2379':{ name:'瑞昱',   price:680,  changePct:1.8,  volume:3000,  avgVolume:2800,  volBid:1800,  volAsk:1200,  amplitude:2.2, openPrice:670,  highPrice:682,  lowPrice:669  },
+};
+function getOfflineStock(code) {
+  const base = OFFLINE_STOCKS[code];
+  if(base) {
+    return {
+      ...base, code,
+      change:  +(base.price * base.changePct / 100).toFixed(1),
+      high52w: +(base.price * 1.3).toFixed(0),
+      low52w:  +(base.price * 0.7).toFixed(0),
+      tag:  STOCK_TAGS[code] || base.name + ' · 天師正在研究此股命格',
+      chars: [...base.name].filter(c => /[\u4e00-\u9fff]/.test(c)),
+    };
+  }
+  // 完全未知：從 CODE_TO_NAME 查名稱，查不到才用代號
+  const name = CODE_TO_NAME[code] || code;
+  return {
+    code, name, price:0, changePct:0, change:0,
+    volume:1000, avgVolume:1000, volBid:500, volAsk:500,
+    amplitude:0, openPrice:0, highPrice:0, lowPrice:0,
+    high52w:0, low52w:0,
+    tag: STOCK_TAGS[code] || name + ' · 天師正在研究此股命格',
+    chars: [...name].filter(c => /[\u4e00-\u9fff]/.test(c)),
+  };
+}
+
+// ═══════════════════════════════════════
+// 完整中文字筆畫字典（熊崎式，覆蓋台股常用字）
+// ═══════════════════════════════════════
+const STROKE_MAP = {
+  '一':1,'乙':1,
+  '二':2,'人':2,'入':2,'八':2,'力':2,'刀':2,'又':2,'丁':2,'七':2,'十':2,
+  '三':3,'山':3,'大':3,'小':3,'上':3,'下':3,'土':3,'士':3,'工':3,'口':3,
+  '千':3,'川':3,'久':3,'凡':3,'女':3,'子':3,'己':3,'已':3,'干':3,'才':3,
+  '中':4,'元':4,'天':4,'王':4,'仁':4,'今':4,'內':4,'公':4,'分':4,'化':4,
+  '升':4,'太':4,'文':4,'方':4,'日':4,'月':4,'木':4,'水':4,'火':4,'心':4,
+  '手':4,'止':4,'毛':4,'孔':4,'少':4,'井':4,'丹':4,'夫':4,'互':4,'牛':4,
+  '永':5,'白':5,'本':5,'主':5,'玉':5,'平':5,'正':5,'生':5,'世':5,'仙':5,
+  '代':5,'出':5,'功':5,'北':5,'半':5,'可':5,'史':5,'右':5,'司':5,'外':5,
+  '市':5,'布':5,'必':5,'未':5,'末':5,'民':5,'甲':5,'申':5,'用':5,'立':5,
+  '令':5,'去':5,'古':5,'巨':5,'幼':5,'母':5,'皮':5,'石':5,'目':5,'四':5,
+  '加':5,'仕':5,'以':5,'包':5,
+  '安':6,'光':6,'全':6,'共':6,'在':6,'地':6,'多':6,'好':6,'如':6,'字':6,
+  '存':6,'成':6,'有':6,'次':6,'江':6,'百':6,'竹':6,'米':6,'羊':6,'老':6,
+  '西':6,'行':6,'任':6,'先':6,'合':6,'名':6,'同':6,'向':6,'因':6,'回':6,
+  '宇':6,'年':6,'朱':6,'自':6,'至':6,'兆':6,'旭':6,'舟':6,'色':6,'而':6,
+  '利':7,'邦':7,'良':7,'志':7,'系':7,'走':7,'吾':7,'均':7,'序':7,'快':7,
+  '技':7,'李':7,'材':7,'沙':7,'況':7,'男':7,'秀':7,'見':7,'角':7,'言':7,
+  '豆':7,'貝':7,'車':7,'克':7,'君':7,'告':7,'吳':7,'妙':7,'改':7,'步':7,
+  '私':7,'宏':7,'那':7,'矽':7,'身':7,'赤':7,'足':7,'里':7,
+  '金':8,'股':8,'長':8,'昇':8,'旺':8,'泓':8,'東':8,'林':8,'武':8,'玫':8,
+  '知':8,'社':8,'兒':8,'典':8,'其':8,'制':8,'協':8,'和':8,'味':8,'命':8,
+  '官':8,'定':8,'宗':8,'忠':8,'昂':8,'松':8,'板':8,'杰':8,'河':8,'玖':8,
+  '的':8,'臥':8,'芬':8,'花':8,'虎':8,'表':8,'近':8,'雨':8,'青':8,'非':8,
+  '奇':8,'委':8,'始':8,'姓':8,'學':8,'鈺':8,'旭':8,'欣':8,'佳':8,'亞':8,
+  '科':9,'美':9,'建':9,'信':9,'南':9,'思':9,'星':9,'春':9,'前':9,'研':9,
+  '品':9,'保':9,'俊':9,'勇':9,'哈':9,'城':9,'姿':9,'客':9,'室':9,'帝':9,
+  '帥':9,'急':9,'昱':9,'查':9,'柔':9,'柳':9,'洋':9,'洲':9,'炫':9,'相':9,
+  '砍':9,'看':9,'紅':9,'約':9,'衍':9,'風':9,'飛':9,'食':9,'首':9,'威':9,
+  '洪':9,'珊':9,'皇':9,'盈':9,'義':9,'奕':9,'彥':9,'昭':9,'柏':9,'炳':9,
+  '泰':10,'通':10,'益':10,'息':10,'高':10,'能':10,'海':10,'記':10,'財':10,
+  '展':10,'家':10,'容':10,'峰':10,'師':10,'時':10,'核':10,'氣':10,'浩':10,
+  '特':10,'留':10,'秘':10,'純':10,'索':10,'訓':10,'起':10,'配':10,'偉':10,
+  '倫':10,'剛':10,'原':10,'唐':10,'員':10,'哲':10,'堂':10,'宸':10,'峻':10,
+  '座':10,'株':10,'格':10,'珍':10,'皓':10,'神':10,'笑':10,'翁':10,'航':10,
+  '討':10,'訊':10,'馬':10,'晉':10,'修':10,'倡':10,'凌':10,'准':10,'埔':10,
+  '庭':10,'旅':10,'桂':10,'桐':10,'殷':10,'泰':10,'烈':10,'珠':10,'益':10,
+  '國':11,'商':11,'清':11,'理':11,'現':11,'產':11,'望':11,'設':11,'造':11,
+  '動':11,'區':11,'參':11,'售':11,'域':11,'基':11,'堅':11,'婦':11,'專':11,
+  '將':11,'崇':11,'常':11,'強':11,'得':11,'接':11,'敏':11,'梅':11,'條':11,
+  '深':11,'涵':11,'球':11,'盛':11,'第':11,'紹':11,'細':11,'統':11,'術':11,
+  '規':11,'許':11,'連':11,'速':11,'部':11,'野':11,'控':11,'張':11,'產':11,
+  '崗':11,'唱':11,'梯':11,
+  '發':12,'華':12,'富':12,'喜':12,'順':12,'進':12,'智':12,'創':12,'勝':12,
+  '博':12,'善':12,'惠':12,'援':12,'最':12,'湖':12,'番':12,'登':12,'筆':12,
+  '結':12,'象':12,'貿':12,'超':12,'越':12,'量':12,'集':12,'雄':12,'復':12,
+  '晴':12,'棉':12,'棋':12,'棒':12,'植':12,'測':12,'港':12,'無':12,'琴':12,
+  '硯':12,'策':12,'紫':12,'絨':12,'給':12,'裁':12,'費':12,'達':12,'雲':12,
+  '項':12,'统':12,'開':12,'業':12,'備':12,'媒':12,'就':12,
+  '晶':12,'欽':12,'棠':12,'森':12,'渤':12,'焱':12,'瑁':12,'睛':12,'硬':12,
+  '電':13,'達':13,'義':13,'福':13,'祿':13,'業':13,'新':13,'數':13,'節':13,
+  '試':13,'資':13,'路':13,'農':13,'運':13,'圓':13,'塑':13,'感':13,'想':13,
+  '搜':13,'損':13,'暗':13,'楊':13,'溝':13,'源':13,'滿':13,'煙':13,'碩':13,
+  '群':13,'聖':13,'詢':13,'詩':13,'跟':13,'鼓':13,'塊':13,'廉':13,'暢':13,
+  '榮':13,'溪':13,'煒':13,'碑':13,'禁':13,'置':13,'豪':13,'鉅':13,'微':13,
+  '碁':13,'瑞':13,'嘉':13,'奧':13,'塗':13,
+  '台':14,'壽':14,'圖':14,'察':14,'境':14,'夢':14,'對':14,'實':14,'彰':14,
+  '態':14,'漢':14,'熊':14,'碧':14,'網':14,'聞':14,'認':14,'說':14,'輔':14,
+  '銀':14,'需':14,'領':14,'鳳':14,'嶄':14,'廓':14,'漂':14,'熙':14,'磁':14,
+  '種':14,'精':14,'綜':14,'誓':14,'閣':14,'鳴':14,'際':14,'銀':14,
+  '廣':15,'德':15,'輝':15,'影':15,'億':15,'劇':15,'增':15,'寬':15,'廟':15,
+  '彈':15,'模':15,'歐':15,'熟':15,'瑩':15,'盤':15,'確':15,'稻':15,'論':15,
+  '賞':15,'質':15,'震':15,'領':15,'魂':15,'儀':15,'憶':15,'潛':15,'稿':15,
+  '調':15,'踐':15,'慧':15,'緯':15,
+  '龍':16,'積':16,'興':16,'橋':16,'機':16,'歷':16,'激':16,'燈':16,'穎':16,
+  '縣':16,'親':16,'錢':16,'錦':16,'頭':16,'壁':16,'學':16,'憲':16,'澳':16,
+  '燃':16,'辦':16,'選':16,'錄':16,'隱':16,'儒':16,
+  '聯':17,'鴻':17,'濟':17,'優':17,'應':17,'營':17,'磯':17,'禮':17,'績':17,
+  '聲':17,'聰':17,'謝':17,'購':17,'賺':17,'鍵':17,'點':17,'醫':17,'鮮':17,
+  '豐':18,'職':18,'藏':18,'醬':18,'鎖':18,'雙':18,'題':18,'額':18,'藍':18,
+  '轉':18,'醒':18,'鎮':18,
+  '麗':19,'穩':19,'議':19,'藥':19,'類':19,'證':19,'識':19,'難':19,'韻':19,
+  '嚴':20,'競':20,'籌':20,'獻':20,'警':20,
+  '續':21,'屬':21,'蘭':21,'鐵':21,'露':21,'響':21,
+  '權':22,'讀':22,'聽':22,
+  '變':23,'顯':23,
+  '靈':24,
+  '灣':25,'觀':25,
+};
+
+// 五行對應（筆畫尾數：1,2=木 3,4=火 5,6=土 7,8=金 9,0=水）
+function strokeToElement(s) {
+  const r = s % 10;
+  if(r===1||r===2) return 'wood';
+  if(r===3||r===4) return 'fire';
+  if(r===5||r===6) return 'earth';
+  if(r===7||r===8) return 'metal';
+  return 'water';
+}
+
+// 各五行的命理含義庫
+const ELEMENT_MEANINGS = {
+  wood:  ['主成長，象徵蓬勃生機','主仁慈，象徵寬廣胸懷','主向上，象徵積極進取','主生發，象徵開創格局'],
+  fire:  ['主熱情，象徵光明前途','主氣勢，象徵聲威四方','主光耀，象徵榮華顯達','主炎上，象徵名聲遠播'],
+  earth: ['主穩固，象徵厚實根基','主積累，象徵財庫豐盈','主中正，象徵德行深厚','主包容，象徵廣納百川'],
+  metal: ['主精準，象徵鋒芒內斂','主金錢，象徵財氣充盈','主剛毅，象徵意志堅定','主收斂，象徵內涵深厚'],
+  water: ['主流動，象徵財源廣進','主智慧，象徵運籌帷幄','主通達，象徵四方暢通','主滋養，象徵生生不息'],
+};
+
+// 動態取得任何漢字的筆畫五行資料
+function getCharData(char) {
+  // 非中文字元（數字、英文等）直接跳過，給預設值
+  if(!/[\u4e00-\u9fff]/.test(char)) {
+    return { strokes: 8, element: 'earth', meaning: '主穩固，象徵厚實根基' };
+  }
+  const strokes = STROKE_MAP[char];
+  if(!strokes) {
+    // 未知漢字：用 unicode 碼點估算，確保為正數
+    const raw = char.charCodeAt(0) - 0x4e00;
+    const est = (raw >= 0 ? raw % 20 : Math.abs(raw) % 20) + 3;
+    const el = strokeToElement(est);
+    return { strokes: est, element: el, meaning: ELEMENT_MEANINGS[el][0] };
+  }
+  const el = strokeToElement(strokes);
+  const idx = strokes % ELEMENT_MEANINGS[el].length;
+  return { strokes, element: el, meaning: ELEMENT_MEANINGS[el][idx] };
+}
+
+
+const ELEMENT_NAMES = { fire:'火', earth:'土', metal:'金', water:'水', wood:'木' };
+const ELEMENT_CLASS = { fire:'ep-fire', earth:'ep-earth', metal:'ep-metal', water:'ep-water', wood:'ep-wood' };
+const ELEMENT_WUXING = {
+  fire:  { generates:'earth', weakens:'metal', description:'火生土，主積聚財氣' },
+  earth: { generates:'metal', weakens:'water', description:'土生金，主財庫穩固' },
+  metal: { generates:'water', weakens:'wood',  description:'金生水，主資金流動' },
+  water: { generates:'wood',  weakens:'fire',  description:'水生木，主成長蓬勃' },
+  wood:  { generates:'fire',  weakens:'earth', description:'木生火，主氣場旺盛' },
+};
+
+// 三才格局名稱對照
+const GE_NAMES = {
+  1:'太極格',3:'三才格',5:'五行格',6:'安穩格',7:'剛毅格',8:'發展格',
+  11:'金剛格',13:'旺盛格',14:'榮達格',15:'福壽格',16:'富貴格',17:'剛強格',
+  18:'發展格',21:'首領格',23:'旺財格',24:'立身格',25:'安康格',29:'智謀格',
+  30:'浮沉格',31:'功成格',32:'貴人格',33:'昌盛格',35:'進財格',37:'仁壽格',
+  39:'長壽格',41:'有德格',43:'散財格',45:'大業格',47:'地位格',48:'成功格',
+  52:'增旺格',63:'吉祥格',65:'興旺格',67:'進取格',
+};
+function geName(n){ return GE_NAMES[n] || (n%2===0?'偶數穩健格':'奇數進取格'); }
+function geLuck(name){
+  const great=['福壽格','富貴格','首領格','旺財格','旺盛格','功成格','貴人格','昌盛格'];
+  const good=['安穩格','發展格','進財格','立身格','智謀格','仁壽格','長壽格'];
+  const bad=['浮沉格','散財格'];
+  if(great.includes(name)) return {cls:'tl-great',text:'大吉'};
+  if(bad.includes(name)) return {cls:'tl-bad',text:'需化解'};
+  if(good.includes(name)) return {cls:'tl-good',text:'吉'};
+  return {cls:'tl-mid',text:'平穩'};
+}
+
+// ═══════════════════════════════════════
+// 看圖說故事：根據當日行情生成天象開場白
+// ═══════════════════════════════════════
+function readTodayChart(stock) {
+  const pct      = stock.changePct || 0;
+  const vol      = stock.volume    || 0;
+  const avg      = stock.avgVolume || vol || 1;
+  const volRatio = vol / avg;
+  const bid      = stock.volBid || 0;
+  const ask      = stock.volAsk || 0;
+  const buyForce = bid + ask > 0 ? bid / (bid + ask) : 0.5;
+  const amp      = stock.amplitude || Math.abs(pct);
+
+  // 判斷是否盤前（平日 09:00 前）
+  const now = new Date();
+  const tw  = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
+  const h = tw.getHours(), wd = tw.getDay();
+  const isPreMarket = wd >= 1 && wd <= 5 && h < 9;
+
+  // ── 漲跌情境 ──
+  let priceScene, priceSignal, priceCls;
+  if(pct >= 6) {
+    priceScene  = isPreMarket
+      ? '昨日貴人顯跡，紫氣隱伏，今日天機示意吉象將至，然需靜候開盤印證'
+      : '今日貴人大駕，陽氣沖天，紫氣貫頂，命格大發之象已現，此乃千載難逢之吉日';
+    priceSignal = isPreMarket ? '紫氣隱伏待發' : '貴人大駕，紫氣貫頂';
+    priceCls    = 's-bull';
+  } else if(pct >= 3) {
+    priceScene  = isPreMarket
+      ? '昨日陽氣積聚，今日吉象隱現，貴人之力恐將延續，宜靜候天時確認'
+      : '今日貴人相助，陽氣鼎盛，命格吉象大顯，上升之勢確立無疑';
+    priceSignal = isPreMarket ? '吉象隱現' : '貴人相助，陽氣鼎盛';
+    priceCls    = 's-bull';
+  } else if(pct >= 1) {
+    priceScene  = isPreMarket
+      ? '昨日向陽之氣初聚，今日天機示意陽氣或將持續流動，靜觀開盤走向'
+      : '今日向陽之氣漸旺，命格吉象初顯，天時正在向好的方向轉化';
+    priceSignal = isPreMarket ? '陽氣待聚' : '向陽之氣漸旺';
+    priceCls    = 's-bull';
+  } else if(pct > -1) {
+    priceScene  = isPreMarket
+      ? '昨日陰陽相持，今日天機渾沌未明，勝負難料，宜待開盤方知天意'
+      : '今日陰陽均衡，命格蓄勢待發，大動之前必有靜默，乃天道積蓄能量之時';
+    priceSignal = isPreMarket ? '天機渾沌未明' : '陰陽均衡蓄勢';
+    priceCls    = 's-mid';
+  } else if(pct > -3) {
+    priceScene  = isPreMarket
+      ? '昨日陰雲漸聚，今日天機示意需謹慎應對，然陰極生陽，不可過於悲觀'
+      : '今日烏雲漸聚，命格暫受壓制，然忌神之力正在消散，否極泰來之象，靜待轉機';
+    priceSignal = isPreMarket ? '陰雲漸聚，宜謹慎' : '烏雲漸聚';
+    priceCls    = 's-mid';
+  } else if(pct > -6) {
+    priceScene  = isPreMarket
+      ? '昨日陰氣未散，今日天機恐仍壓抑，陰雲或將繼續籠罩，宜守不宜攻'
+      : '今日烏雲罩頂，陰氣大盛，命格受壓，忌神當道，然天道有循環，此乃去蕪存菁之過程';
+    priceSignal = isPreMarket ? '陰氣未散，宜守' : '烏雲罩頂';
+    priceCls    = 's-bear';
+  } else {
+    priceScene  = isPreMarket
+      ? '昨日煞氣深重，今日天機示意仍需高度警戒，陰霾未退，靜觀其變為上策'
+      : '今日煞氣籠罩，烏雲蔽日，命格大受衝擊，此乃天道損之、大破大立之象，護身符備妥';
+    priceSignal = isPreMarket ? '煞氣未退，高度警戒' : '煞氣籠罩，烏雲蔽日';
+    priceCls    = 's-bear';
+  }
+
+  // ── 氣場情境（成交量）──
+  let volScene, volSignal, volCls;
+  if(volRatio >= 2 && pct > 0) {
+    volScene  = isPreMarket
+      ? '昨日天地之氣大幅交匯，今日動能或將延續，大象蓄而待發'
+      : '天地之氣大幅交匯，萬象俱動，命格發動之明證，大象已現';
+    volSignal = isPreMarket ? '動能蓄而待發' : '天地氣交，大象已現';
+    volCls    = 's-bull';
+  } else if(volRatio >= 2 && pct < 0) {
+    volScene  = isPreMarket
+      ? '昨日陰氣洶湧，今日恐仍需謹慎，陰霾未必一日消散'
+      : '天機混亂，陰氣洶湧，氣場震盪，命格承受重大考驗';
+    volSignal = isPreMarket ? '陰霾未散，謹慎' : '天機混亂，陰氣洶湧';
+    volCls    = 's-bear';
+  } else if(volRatio >= 1.3) {
+    volScene  = isPreMarket ? '昨日氣場活絡，今日動象或將延續' : '天地之力漸聚，氣場日盛，動象已現';
+    volSignal = isPreMarket ? '氣場待續' : '天地之力漸聚';
+    volCls    = pct >= 0 ? 's-bull' : 's-mid';
+  } else if(volRatio <= 0.6) {
+    volScene  = isPreMarket ? '昨日萬物蟄伏，今日或仍靜默，靜待天時' : '萬物蟄伏，天氣收斂，命格沉潛積蓄之象，靜待天時';
+    volSignal = isPreMarket ? '靜默蓄勢' : '萬物蟄伏';
+    volCls    = 's-gray';
+  } else {
+    volScene  = isPreMarket ? '昨日氣場平穩，今日天機或維持均衡之象' : '天地之力均衡流轉，氣場蓄而待發';
+    volSignal = isPreMarket ? '均衡待觀' : '氣場蓄而待發';
+    volCls    = 's-mid';
+  }
+
+  // ── 陰陽力道情境（買賣力道）──
+  let forceScene, forceSignal, forceCls;
+  if(buyForce >= 0.6) {
+    forceScene  = isPreMarket ? '昨日向陽之力佔優，今日陽氣或將持續主導' : '向陽之力大盛，陰氣節節退守，天道此刻偏向陽剛之象';
+    forceSignal = isPreMarket ? '陽氣有望持續' : '向陽大盛';
+    forceCls    = 's-bull';
+  } else if(buyForce <= 0.4) {
+    forceScene  = isPreMarket ? '昨日陰氣佔優，今日陰雲或將延續壓制' : '烏雲壓制，陰氣主導乾坤，陽氣暫退，天道此刻偏向陰柔收斂之象';
+    forceSignal = isPreMarket ? '陰雲有望延續' : '烏雲壓制';
+    forceCls    = 's-bear';
+  } else {
+    forceScene  = isPreMarket ? '昨日龍虎相爭，今日勝負仍難料，靜待天意' : '龍虎相爭，渾沌未明，天機未透，靜待天意';
+    forceSignal = isPreMarket ? '勝負難料' : '龍虎相爭，渾沌未明';
+    forceCls    = 's-mid';
+  }
+
+  // ── 震盪情境 ──
+  let ampNote = '';
+  if(amp >= 5) ampNote = isPreMarket
+    ? '昨日天機震盪劇烈，今日陰陽或仍交戰，守定心志方能不被波動所惑。'
+    : '今日天機混亂，陰陽交戰激烈，命格大起大落，守定心志方能不被波動所惑。';
+  else if(amp >= 3) ampNote = isPreMarket
+    ? '昨日陰陽交替明顯，今日或仍是天道試探心志之時。'
+    : '今日陰陽交替明顯，天道試探持守者心志之時，守定方能致遠。';
+
+  // ── 創高或跌深 ──
+  let extremeNote = '';
+  if(stock.highPrice && stock.high52w && stock.highPrice >= stock.high52w * 0.98) {
+    extremeNote = isPreMarket
+      ? '昨日命格觸及近年天頂，今日或將面臨盛極轉折之考驗，需保持警覺。'
+      : '今日命格觸及近年天頂，氣勢達至頂峰，貴人之力顯現極致，然盛極需防轉折。';
+  } else if(stock.lowPrice && stock.low52w && stock.lowPrice <= stock.low52w * 1.02) {
+    extremeNote = isPreMarket
+      ? '昨日命格觸及近年地底，今日或見否極泰來之轉機，靜待天意揭曉。'
+      : '今日命格觸及近年地底，烏雲沉至谷底，然谷底往往是命運轉折之所在，否極泰來可期。';
+  }
+
+  return {
+    priceScene, priceSignal, priceCls,
+    volScene,   volSignal,   volCls,
+    forceScene, forceSignal, forceCls,
+    ampNote, extremeNote,
+    isPreMarket,
+    pct, volRatio, buyForce,
+    isRising:   pct >= 1,
+    isFalling:  pct <= -1,
+    isBigMove:  Math.abs(pct) >= 3,
+    isVolSurge: volRatio >= 1.5,
+  };
+}
+const TIANGAN = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
+const DIZHI   = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
+const GAN_ELEMENT = {甲:'wood',乙:'wood',丙:'fire',丁:'fire',戊:'earth',己:'earth',庚:'metal',辛:'metal',壬:'water',癸:'water'};
+
+function getGanZhi(){
+  const base = new Date(1900,0,31);
+  const today = new Date();
+  const diff = Math.floor((today-base)/(1000*60*60*24));
+  const gan = TIANGAN[diff%10];
+  const zhi = DIZHI[diff%12];
+  return { text: gan+zhi, element: GAN_ELEMENT[gan], gan, zhi };
+}
+
+function wuxingRelation(dayEl, companyEl){
+  const gen = ELEMENT_WUXING[dayEl];
+  if(gen.generates === companyEl) return { text:`${ELEMENT_NAMES[dayEl]}生${ELEMENT_NAMES[companyEl]}`, luck:'大吉', desc:'今日天象與公司命格相生，財氣大旺' };
+  if(gen.weakens === companyEl)   return { text:`${ELEMENT_NAMES[dayEl]}剋${ELEMENT_NAMES[companyEl]}`, luck:'注意', desc:'今日天象與公司命格相剋，需謹慎應對' };
+  if(dayEl === companyEl)         return { text:`${ELEMENT_NAMES[dayEl]}比和`, luck:'平穩', desc:'今日天象與公司命格比和，穩中有進' };
+  return { text:`${ELEMENT_NAMES[dayEl]}洩${ELEMENT_NAMES[companyEl]}`, luck:'中性', desc:'今日天象與公司命格相洩，氣場平穩' };
+}
+
+// ═══════════════════════════════════════
+// 大盤情境
+// ═══════════════════════════════════════
+const MARKET_MOODS = [
+  {
+    id:'bull_all',
+    sky:'sunny', icon:'☀️',
+    title:'今日天色：晴空萬里，財神當道',
+    desc:'財星高照，紫氣東來，諸事皆宜，宜把握時機',
+    index:'加權↑ 櫃買↑',
+    toneCls:'tone-bull', tone:'積極出擊',
+    skyPhrase:'天光大盛，紫氣東來',
+    warn:false
+  },
+  {
+    id:'bull_large',
+    sky:'cloudy', icon:'⛅',
+    title:'今日天色：雲遮半日，主帥獨撐',
+    desc:'龍頭護氣，然偏鋒暗自失血，陰晴難辨，需謹慎分辨強弱',
+    index:'加權↑ 櫃買↓',
+    toneCls:'tone-mixed', tone:'分化觀察',
+    skyPhrase:'雲遮日色，陰晴難辨',
+    warn:true
+  },
+  {
+    id:'rotate',
+    sky:'overcast', icon:'🌥️',
+    title:'今日天色：天色晦暗，資金暗渡',
+    desc:'主帥略顯疲態，偏鋒悄然逞強，陰氣流竄，方向難辨',
+    index:'加權↓ 櫃買↑',
+    toneCls:'tone-caution', tone:'謹慎為上',
+    skyPhrase:'天勢晦暗，風雲變色',
+    warn:true
+  },
+  {
+    id:'bear_all',
+    sky:'storm', icon:'⛈️',
+    title:'今日天色：烏雲蔽日，雷雨交加',
+    desc:'陰氣大盛，煞氣四布，天師今日勸諸君先避風雨、保存實力',
+    index:'加權↓ 櫃買↓',
+    toneCls:'tone-bear', tone:'靜觀其變',
+    skyPhrase:'雷霆震地，黑雲壓城',
+    warn:true
+  },
+];
+
+// 大盤數據快取
+const MARKET_CACHE = { today: null, week: null, month: null, lastFetch: 0 };
+
+// 把加權指數漲跌幅對應到 MARKET_MOODS
+function pctToMood(tse, otc) {
+  // 兩者都強
+  if(tse >= 0.5 && otc >= 0.5)  return MARKET_MOODS[0]; // 晴空萬里
+  // 加權強、OTC弱
+  if(tse >= 0.5 && otc < 0)     return MARKET_MOODS[1]; // 雲遮半日
+  // 加權弱、OTC強（輪動）
+  if(tse < 0 && otc >= 0.5)     return MARKET_MOODS[2]; // 天色晦暗
+  // 兩者都弱
+  if(tse < -0.5 && otc < -0.5)  return MARKET_MOODS[3]; // 烏雲蔽日
+  // 中性
+  return tse >= 0 ? MARKET_MOODS[0] : MARKET_MOODS[3];
+}
+
+async function fetchMarketData() {
+  const now = Date.now();
+  // 快取 5 分鐘
+  if(MARKET_CACHE.lastFetch && now - MARKET_CACHE.lastFetch < 300000 && MARKET_CACHE.today) {
+    return MARKET_CACHE;
+  }
+
+  const headers = { 'X-API-KEY': FUGLE_API_KEY };
+
+  try {
+    // 同時抓加權指數（IX0001）和 OTC（IX0043）
+    const [tseRes, otcRes] = await Promise.all([
+      fetch('https://api.fugle.tw/marketdata/v1.0/stock/intraday/quote/IX0001', { headers }),
+      fetch('https://api.fugle.tw/marketdata/v1.0/stock/intraday/quote/IX0043', { headers }),
+    ]);
+
+    const tseData = tseRes.ok ? await tseRes.json() : null;
+    const otcData = otcRes.ok ? await otcRes.json() : null;
+
+    const tsePct   = tseData?.changePercent || 0;
+    const otcPct   = otcData?.changePercent || 0;
+
+    // 週漲跌：用 52 週高低點位置估算（簡化版）
+    const tseWeekPct  = tseData?.weekChangePercent || tsePct * 2.5 || 0;
+    const tseMonthPct = tseData?.monthChangePercent || tsePct * 10 || 0;
+
+    MARKET_CACHE.today = pctToMood(tsePct, otcPct);
+    MARKET_CACHE.week  = pctToMood(tseWeekPct / 2.5, otcPct);
+    MARKET_CACHE.month = pctToMood(tseMonthPct / 10, otcPct);
+    MARKET_CACHE.tsePct   = tsePct;
+    MARKET_CACHE.otcPct   = otcPct;
+    MARKET_CACHE.lastFetch = now;
+
+    return MARKET_CACHE;
+  } catch(e) {
+    console.warn('大盤數據抓取失敗，使用備援：', e.message);
+    // 備援：用星期幾模擬
+    const day = new Date().getDay();
+    const idx = [1,0,3,2,1][day] || 0;
+    MARKET_CACHE.today = MARKET_MOODS[idx];
+    MARKET_CACHE.week  = MARKET_MOODS[idx];
+    MARKET_CACHE.month = MARKET_MOODS[1]; // 預設中性
+    MARKET_CACHE.lastFetch = now;
+    return MARKET_CACHE;
+  }
+}
+
+// 同步版本（給初始化用，第一次還沒抓到時用星期幾備援）
+function getTodayMarket(){
+  if(MARKET_CACHE.today) return MARKET_CACHE.today;
+  const day = new Date().getDay();
+  const idx = [1,0,3,2,1][day] || 0;
+  return MARKET_MOODS[idx];
+}
+function getWeekMarket(){
+  return MARKET_CACHE.week || getTodayMarket();
+}
+function getMonthMarket(){
+  return MARKET_CACHE.month || getTodayMarket();
+}
+
+// ═══════════════════════════════════════
+// 批文生成（本機版，不需 API）
+// ═══════════════════════════════════════
+const GUA_NAMES = {
+  tomorrow: ['火雷噬嗑 ䷔','水火既濟 ䷾','天地否 ䷋','地天泰 ䷊','風水渙 ䷺','山澤損 ䷨','雷山小過 ䷽','澤天夬 ䷪'],
+  week:     ['地天泰 ䷊','雷天大壯 ䷡','山風蠱 ䷑','水澤節 ䷻','天風姤 ䷫','火水未濟 ䷿','澤雷隨 ䷐','風地觀 ䷓'],
+  month:    ['水風井 ䷯','澤火革 ䷰','乾為天 ䷀','坤為地 ䷁','風雷益 ䷩','天水訟 ䷅','山地剝 ䷖','雷地豫 ䷏'],
+};
+
+// 讓三個維度各自有不同的日期種子，互不重疊
+function pickGuaFor(period){
+  const today = Math.floor(Date.now()/86400000);
+  const seeds = { tomorrow: today, week: today+37, month: today+73 };
+  const arr = GUA_NAMES[period];
+  return arr[seeds[period] % arr.length];
+}
+
+// RSI 模擬：三個時間維度各自獨立，明日最敏感、下月最平滑
+function mockRSI(period){
+  const base = 55;
+  const offsets = { tomorrow: Math.floor(Date.now()/86400000)%20-5, week: Math.floor(Date.now()/604800000)%15-3, month: Math.floor(Date.now()/2592000000)%10-2 };
+  return Math.min(85, Math.max(25, base + offsets[period]));
+}
+
+function buildFortune(stock, nameData, ganzhi, wuxing, market, period, chart){
+  const { tian, ren, di, zong } = nameData;
+  const tianName = geName(tian), renName = geName(ren), diName = geName(di), zongName = geName(zong);
+  const tianLuck = geLuck(tianName), renLuck = geLuck(renName), diLuck = geLuck(diName), zongLuck = geLuck(zongName);
+  const isConservative = market.tone === '靜觀其變' || market.tone === '謹慎為上' || market.tone === '分化觀察';
+
+  // 若沒有 chart 資料，用中性預設
+  const c = chart || { priceScene:'今日氣場平穩，命格蓄勢待發', priceSignal:'氣場平穩', priceCls:'s-mid', volScene:'天地之力均衡流動', volSignal:'氣場平穩', volCls:'s-mid', forceScene:'買賣勢均力敵', forceSignal:'買賣均衡', forceCls:'s-mid', ampNote:'', extremeNote:'', isRising:false, isFalling:false, isBigMove:false, isVolSurge:false, pct:0 };
+
+  const gua = pickGuaFor(period);
+  const guaName = gua.split(' ')[0];
+
+  // ── 底層指標隱藏層 ──
+  const rsi = mockRSI(period);
+  const YIN = rsi > 70, NEG = rsi < 40;
+  const qiSignal = YIN ? '陽盈則虧' : NEG ? '否極泰來' : '陰陽調和';
+  const qiSigCls = YIN ? 's-bear'   : NEG ? 's-bull'   : 's-mid';
+
+  // ── 命理核心計算 ──
+  const dayNum = Math.floor(Date.now()/86400000);
+
+  // 用神忌神：公司主五行的用神（需要什麼五行來生扶）
+  const YONGSHEN = {
+    fire:  'wood',  // 火需木生
+    earth: 'fire',  // 土需火生
+    metal: 'earth', // 金需土生
+    water: 'metal', // 水需金生
+    wood:  'water', // 木需水生
+  };
+  const JISHEN = {
+    fire:  'water', // 火忌水剋
+    earth: 'wood',  // 土忌木剋
+    metal: 'fire',  // 金忌火剋
+    water: 'earth', // 水忌土剋
+    wood:  'metal', // 木忌金剋
+  };
+  const compEl   = nameData.companyEl || 'fire'; // 公司主五行
+  const yongEl   = YONGSHEN[compEl];
+  const jiEl     = JISHEN[compEl];
+  const todayEl  = ganzhi.element;
+  const isYong   = todayEl === yongEl;  // 今日為用神日
+  const isJi     = todayEl === jiEl;    // 今日為忌神日
+
+  // 三才相互關係
+  const tianRenRel = (() => {
+    const t = ELEMENT_WUXING[compEl]; // 以公司五行代入天格五行
+    if(tian > ren) return '天格壓人格，有貴而難展';
+    if(ren > tian) return '人格凌天格，氣旺但根基需固';
+    return '天人相稱，格局均衡';
+  })();
+  const renDiRel = (() => {
+    if(ren > di) return '人格生地格，動中有守';
+    if(di > ren) return '地格厚人格，根基厚實';
+    return '人地相當，穩中求進';
+  })();
+
+  // 靈動力：奇數主動（適短線）、偶數主穩（適長線）
+  const lingDong = {
+    tian: tian%2 !== 0 ? '奇數主動象，短線氣場活躍' : '偶數主穩象，長線根基深厚',
+    ren:  ren%2  !== 0 ? '奇數流動，起伏之性較強'    : '偶數沉穩，抗壓之性較佳',
+    zong: zong%2 !== 0 ? '奇數總格，命運多變但機會多' : '偶數總格，穩健積累型命格',
+  };
+
+  // 大運方向（用命格數字 + 週期計算，決定三才是否同向）
+  const trendUp = (dayNum + tian + ren) % 3 !== 0;
+  const weekEl = ['wood','fire','earth','metal','water'][Math.floor(dayNum/7) % 5];
+  const weekElName = ELEMENT_NAMES[weekEl];
+  const weekVsComp = ELEMENT_WUXING[weekEl].generates === compEl ? '生扶' :
+                     ELEMENT_WUXING[weekEl].weakens   === compEl ? '相剋' :
+                     weekEl === compEl                            ? '比和' : '相洩';
+
+  // 流月五行（每月一個）
+  const monthEl = ['water','wood','wood','fire','fire','earth','earth','metal','metal','water','water','wood'][new Date().getMonth()];
+  const monthElName = ELEMENT_NAMES[monthEl];
+  const monthVsComp = ELEMENT_WUXING[monthEl].generates === compEl ? '生扶，命格受蔭' :
+                      ELEMENT_WUXING[monthEl].weakens   === compEl ? '相剋，命格受壓' :
+                      monthEl === compEl                             ? '比和，同氣連枝' : '相洩，氣場分散';
+
+  // ── 吉凶綜合評分 → 直白結論 ──
+  function calcVerdict(scores){
+    // scores: 正數為吉，負數為凶，加總
+    const total = scores.reduce((a,b)=>a+b,0);
+    if(total >= 3)  return { pill:'vp-buy',   action:'建議積極布局', cls:'bull' };
+    if(total >= 1)  return { pill:'vp-buy',   action:'建議小試',     cls:'bull' };
+    if(total >= 0)  return { pill:'vp-watch', action:'可酌量介入',   cls:'mid'  };
+    if(total >= -1) return { pill:'vp-watch', action:'謹慎觀望',     cls:'mid'  };
+    if(total >= -2) return { pill:'vp-hold',  action:'建議減持',     cls:'bear' };
+    return              { pill:'vp-avoid', action:'建議暫時出場', cls:'bear' };
+  }
+
+  const PERIOD_DATA = {
+
+    // ════════════════════════════════
+    // 明日：主角 = 日柱干支 × 人格 × 用神忌神
+    // ════════════════════════════════
+    tomorrow: {
+      gua,
+      sub: '今日天象 · 人格 × 用神忌神合參',
+      text: (() => {
+        // 開場：今日行情故事
+        const chartOpening = c.priceScene + (c.ampNote ? '　'+c.ampNote : '') + (c.extremeNote ? '　'+c.extremeNote : '') + '　' + c.volScene + '，' + c.forceScene + '。';
+
+        const yongJiLine = isYong
+          ? `今日${ganzhi.text}日，${ELEMENT_NAMES[todayEl]}氣當令，正是${stock.name}之用神日——命格最需之能量今日充盈，與今日漲象相互呼應，吉上加吉。`
+          : isJi
+          ? `今日${ganzhi.text}日，${ELEMENT_NAMES[todayEl]}氣當令，然此乃${stock.name}之忌神日——命格最忌之五行今日肆虐，${c.isFalling?'與今日跌象相互印證，需加倍謹慎防守。':'雖今日尚有支撐，仍需謹慎防守。'}`
+          : `今日${ganzhi.text}日，${ELEMENT_NAMES[todayEl]}氣當令，與${stock.name}命格${wuxing.text}，${c.isRising?'配合今日漲象，吉象尚稱明朗。':'氣場尚稱平和。'}`;
+
+        const renLine = `人格「${renName}」（${ren}數）為今日命運主軸，${lingDong.ren}。${tianRenRel}，${renDiRel}。`;
+
+        const qiLine = YIN ? '然陽氣過盛，天道損之，盛極者需防急轉。'
+                    : NEG  ? '然陰氣沉積，否極泰來，低迷之象往往藏有轉機。'
+                    :        '陰陽調和之際，蓄而待發，靜候最佳時機。';
+
+        const skyLine = isConservative
+          ? `天勢${market.skyPhrase}，縱有用神護持，亦需順應天時，不可逆勢強行。`
+          : c.isPreMarket
+          ? `天象${market.skyPhrase}，命格蓄勢，今日開盤後天機方能完整揭曉。`
+          : `天象${market.skyPhrase}，命格與天時相契，今日吉象初現。`;
+
+        return `「${guaName}」之象，${chartOpening} ${yongJiLine} ${renLine} ${qiLine} ${skyLine}`;
+      })(),
+      punchline: c.isPreMarket
+        ? c.isBigMove && c.isRising
+          ? `昨日貴人之象隱現，今日開盤前天機尚未完整揭示。天師忠告：好兆頭需開盤印證，莫未見真章便衝動行事。`
+          : c.isBigMove && c.isFalling
+          ? `昨日陰雲深重，今日天機示意仍需謹慎。天師忠告：開盤前保持清醒，觀察氣場方向確立後再作決斷。`
+          : `今日尚在盤前，天機未完整揭示。天師忠告：靜待開盤，方知今日命格真正走向，莫憑昨日之象輕易斷言。`
+        : isYong && !isConservative && c.isRising
+        ? `用神當令加上今日漲象，命格雙重共鳴。天師忠告：好日子要用在刀口上，順勢而為，莫求一夕暴富。`
+        : isJi && c.isFalling
+        ? `忌神當道且今日跌象印證，人格雙重受壓。天師忠告：今日宜守不宜攻，最好的進攻是讓自己不受傷。`
+        : isConservative
+        ? `天勢${market.skyPhrase}，人格雖穩，天時不配合。天師忠告：等風來，不如等命格吉日再動。`
+        : c.isBigMove && c.isRising
+        ? `今日大漲之象已現，命格氣場沸騰。天師忠告：大漲之日最容易衝動，越是好消息越要冷靜。`
+        : c.isBigMove && c.isFalling
+        ? `今日大跌之象已現，命格承受重壓。天師忠告：跌深不等於見底，摔得快不代表反彈快。`
+        : `人格「${renName}」今日氣場平穩。天師忠告：無大吉亦無大凶，小步試探即可，莫輕舉妄動。`,
+      signals: [
+        {t: c.priceSignal, c: c.priceCls},
+        {t: c.volSignal,   c: c.volCls},
+        {t: isYong?'用神當令':isJi?'忌神當道':'五行平和', c: isYong?'s-bull':isJi?'s-bear':'s-mid'},
+        {t: market.skyPhrase, c: isConservative?'s-bear':'s-bull'},
+      ],
+      conservative: isConservative,
+      verdict: (() => {
+        const scores = [
+          isYong ? 2 : isJi ? -2 : 0,
+          renLuck.cls==='tl-great' ? 1 : renLuck.cls==='tl-bad' ? -1 : 0,
+          YIN ? -1 : NEG ? 1 : 0,
+          isConservative ? -1 : 1,
+          // 加入今日行情分數
+          c.pct >= 3 ? 1 : c.pct >= 1 ? 0.5 : c.pct <= -3 ? -1 : c.pct <= -1 ? -0.5 : 0,
+          c.isVolSurge && c.isRising ? 0.5 : c.isVolSurge && c.isFalling ? -0.5 : 0,
+        ];
+        const v = calcVerdict(scores);
+        return {
+          pill: v.pill, action: v.action,
+          reason: isYong ? `用神「${ELEMENT_NAMES[yongEl]}」今日當令，人格「${renName}」受蔭，短線命格吉象確立。`
+                 : isJi  ? `忌神「${ELEMENT_NAMES[jiEl]}」今日肆虐，人格「${renName}」受壓，短線需謹慎應對。`
+                 : `今日五行與命格${wuxing.text}，人格「${renName}」氣場平穩，吉凶尚在觀察中。`,
+          condition: isYong ? '吉日亦需留三分力，莫因好日子而失去戒心。'
+                   : isJi  ? '忌神日若強行進場，需設好退路，遇不順立即撤退。'
+                   : '無明顯吉凶之日，宜輕倉試探，觀察後再決定方向。',
+        };
+      })(),
+    },
+
+    // ════════════════════════════════
+    // 下週：主角 = 五行 × 天格地格 × 三才相互關係
+    // ════════════════════════════════
+    week: {
+      gua,
+      sub: '本週天象 · 天格地格 × 三才格局合參',
+      text: (() => {
+        const weekLine = `本週五行屬「${weekElName}」，與${stock.name}命格${weekVsComp}——${
+          weekVsComp==='生扶' ? '本週天象為命格補充能量，貴人之氣漸盛。' :
+          weekVsComp==='相剋' ? '本週天象對命格形成壓制，需以守代攻，靜待過去。' :
+          weekVsComp==='比和' ? '本週天象與命格同氣連枝，氣場平穩，宜穩步前行。' :
+                                '本週天象洩散命格之氣，需防過度消耗，保存實力。'
+        }`;
+
+        const tianDiLine = `天格「${tianName}」（${tian}數）主命格之頂，${lingDong.tian}；地格「${diName}」（${di}數）主根基，${diLuck.cls==='tl-great'?'大吉之格，根基深厚':'需持續鞏固根基'}。${tianRenRel}，三才之間${trendUp?'氣場同向，本週大運相助':'氣場紊亂，本週宜守不宜攻'}。`;
+
+        const skyLine = isConservative
+          ? `然天勢${market.skyPhrase}，即便天格護持，煞氣仍需提防，本週切莫輕舉妄動。`
+          : `天象${market.skyPhrase}，天格地格與天象配合，本週格局${weekVsComp==='生扶'?'相當吉利':'尚稱平穩'}。`;
+
+        return `「${guaName}」之象映照本週，${weekLine} ${tianDiLine} ${skyLine}`;
+      })(),
+      punchline: weekVsComp==='生扶' && !isConservative
+        ? `天象生扶命格，天格「${tianName}」貴人星動。天師忠告：本週是難得的順風局，但順風行船也要掌好舵。`
+        : weekVsComp==='相剋' || isConservative
+        ? `天象對命格${weekVsComp}，天格「${tianName}」受壓。天師忠告：退守不是失敗，是為下一次進攻蓄力。`
+        : `本週五行與命格${weekVsComp}，格局平穩。天師忠告：平穩之週最適合打基礎，莫因無大波動而鬆懈。`,
+      signals: [
+        {t: weekElName+'週·'+weekVsComp, c: weekVsComp==='生扶'?'s-bull':weekVsComp==='相剋'?'s-bear':'s-mid'},
+        {t: '天格'+tianName, c: tianLuck.cls==='tl-great'?'s-bull':'s-mid'},
+        {t: '地格'+diName,   c: diLuck.cls==='tl-great'?'s-bull':diLuck.cls==='tl-bad'?'s-bear':'s-mid'},
+        {t: trendUp?'三才同向':'三才失序', c: trendUp?'s-bull':'s-mid'},
+      ],
+      conservative: isConservative,
+      verdict: (() => {
+        const scores = [
+          weekVsComp==='生扶'?2 : weekVsComp==='相剋'?-2 : weekVsComp==='比和'?1:-1,
+          tianLuck.cls==='tl-great'?1:tianLuck.cls==='tl-bad'?-1:0,
+          diLuck.cls==='tl-great'?1:diLuck.cls==='tl-bad'?-1:0,
+          isConservative?-1:trendUp?1:0,
+        ];
+        const v = calcVerdict(scores);
+        return {
+          pill: v.pill, action: v.action,
+          reason: `本週「${weekElName}」與命格${weekVsComp}，天格「${tianName}」${tianLuck.text}，地格「${diName}」${diLuck.text}，三才格局${trendUp?'同向吉象':'紊亂需守'}。`,
+          condition: weekVsComp==='生扶' ? '吉週莫貪，分步而進，留有餘地以應突變。'
+                   : weekVsComp==='相剋' ? '凶週宜守，若非必要勿輕易加注，等待轉換。'
+                   : '平穩週份適合觀察佈局，勿急於一時，耐心等待吉象顯現。',
+        };
+      })(),
+    },
+
+    // ════════════════════════════════
+    // 下月：主角 = 總格 × 流月大運 × 靈動力長線分析
+    // ════════════════════════════════
+    month: {
+      gua,
+      sub: '本月大運 · 總格命格 × 長線根基合參',
+      text: (() => {
+        const monthLine = `本月流月五行屬「${monthElName}」，與${stock.name}命格${monthVsComp}。流月乃大運之縮影，此一屬性將主導本月氣場走向。`;
+
+        const zongLine = `總格「${zongName}」（${zong}數）為命運之總結，${lingDong.zong}。${
+          zongLuck.cls==='tl-great' ? '此格為上吉之格，長線命運根基深厚，即便短期受壓，終將回歸吉象。' :
+          zongLuck.cls==='tl-bad'   ? '此格主起伏波折，長線需以守為主，切勿貪功冒進，待吉運到來再圖大局。' :
+                                      '此格平穩中正，長線宜穩健積累，不求暴富，但求細水長流。'
+        }`;
+
+        const threeLineAnalysis = `天格「${tianName}」主上層命運，地格「${diName}」主根基深淺，人格「${renName}」主中間運勢起伏。${tianRenRel}，${renDiRel}，三才之間的相互制衡，決定了本月命運能否完全發揮。`;
+
+        const skyLine = isConservative
+          ? `然天勢${market.skyPhrase}，本月大運雖有其象，仍需防天時煞氣削弱命格之力。長線者可安心持守，短線者宜退觀天象。`
+          : `天象${market.skyPhrase}，本月流月與命格${monthVsComp.split('，')[0]}，長線格局${zongLuck.cls==='tl-great'?'大吉確立':'穩步向前'}。`;
+
+        return `「${guaName}」映照本月長線，${monthLine} ${zongLine} ${threeLineAnalysis} ${skyLine}`;
+      })(),
+      punchline: zongLuck.cls==='tl-great' && !isConservative
+        ? `總格「${zongName}」乃上吉之格，本月流月又${monthVsComp.split('，')[0]}。天師忠告：長線命格如此，守住節奏，時間是你最大的盟友。`
+        : zongLuck.cls==='tl-bad' || isConservative
+        ? `總格「${zongName}」本月承受流月${monthVsComp.split('，')[0]}之壓。天師忠告：長線需要的不是勇氣，是耐心。等對的時機，比搶先進場更重要。`
+        : `總格「${zongName}」本月流月平穩。天師忠告：長線投資最忌短線思維，穩穩積累，莫因一時波動亂了方寸。`,
+      signals: [
+        {t: monthElName+'月·'+monthVsComp.split('，')[0], c: monthVsComp.includes('生扶')?'s-bull':monthVsComp.includes('相剋')?'s-bear':'s-mid'},
+        {t: '總格'+zongName, c: zongLuck.cls==='tl-great'?'s-bull':zongLuck.cls==='tl-bad'?'s-bear':'s-mid'},
+        {t: lingDong.zong.split('，')[0], c: zong%2!==0?'s-mid':'s-bull'},
+        {t: trendUp?'三才同向':'三才需守', c: trendUp?'s-bull':'s-mid'},
+      ],
+      conservative: isConservative,
+      verdict: (() => {
+        const scores = [
+          monthVsComp.includes('生扶')?2:monthVsComp.includes('相剋')?-2:monthVsComp.includes('比和')?1:-1,
+          zongLuck.cls==='tl-great'?2:zongLuck.cls==='tl-bad'?-2:0,
+          trendUp?1:-1,
+          isConservative?-1:1,
+        ];
+        const v = calcVerdict(scores);
+        return {
+          pill: v.pill, action: v.action,
+          reason: `本月「${monthElName}」流月與命格${monthVsComp.split('，')[0]}，總格「${zongName}」${zongLuck.text}，長線命格${trendUp?'氣場同向':'需要守位'}。`,
+          condition: zongLuck.cls==='tl-great'
+            ? '長線雖吉，仍需注意短線天象變化，莫因長線樂觀而忽略短期風險。'
+            : zongLuck.cls==='tl-bad'
+            ? '長線格局需要時間化解，切勿重倉，以小部位試探為宜。'
+            : '長線格局平穩，分批布局最為適宜，急進急退皆非良策。',
+        };
+      })(),
+    },
+  };
+
+  // 把公司主五行存進 nameData 供其他地方使用
+  nameData.companyEl = nameData.companyEl || 'fire';
+
+  return PERIOD_DATA[period];
+}
+
+// 批文格式化：句子切成段落，增加易讀性
+function formatFortuneText(text) {
+  if(!text) return '';
+  // 先整理多餘空白
+  let t = text.replace(/\s+/g, ' ').trim();
+  // 在段落分隔點插入換行：開場（行情故事）/ 命格分析 / 天象說明 各成一段
+  // 策略：遇到「今日干支」「人格」「天勢」「天象」開頭的句子前換段
+  const breakPoints = [
+    /(?=今日[甲乙丙丁戊己庚辛壬癸])/,   // 干支日開頭
+    /(?=人格「)/,                          // 人格分析
+    /(?=天勢[^\s])/,                       // 天勢描述
+    /(?=天象[^\s])/,                       // 天象描述
+    /(?=本週)/,                        // 週運開頭
+    /(?=天格「[^」]+」（\d)/,              // 三才分析
+    /(?=本月流月)/,                        // 月運開頭
+    /(?=總格「)/,                          // 總格分析
+  ];
+  breakPoints.forEach(pattern => {
+    t = t.replace(pattern, '\n');
+  });
+  // 把換行轉成段落
+  return t.split('\n')
+    .map(s => s.trim())
+    .filter(s => s.length > 0)
+    .map(s => `<p style="margin:0 0 0.8em;">${s}</p>`)
+    .join('');
+}
+
+function renderFortunePanel(content){
+  const v = content.verdict || {};
+  return `
+    <div class="fortune-card">
+      <div class="fortune-head">
+        <div>
+          <p class="fortune-gua">${content.gua}</p>
+          <p class="fortune-sub">${content.sub}</p>
+        </div>
+        <div class="stars-wrap">
+          <span class="stars">${content.stars||'★★★★☆'}</span>
+          <span class="stars-label">${content.conservative?'謹慎觀望':'財運旺盛'}</span>
+        </div>
+      </div>
+      <div class="fortune-text">${formatFortuneText(content.text)}</div>
+      <div class="punchline${content.conservative?' conservative':''}">${content.punchline}</div>
+      <div class="signals">${content.signals.map(s=>`<span class="sig ${s.c}">${s.t}</span>`).join('')}</div>
+      ${v.action ? `
+      <div class="verdict-box">
+        <p class="verdict-box-title">— 天師明確結論 —</p>
+        <div class="verdict-action">
+          <span class="verdict-pill ${v.pill}">${v.action}</span>
+          <span class="verdict-reason">${v.reason}</span>
+        </div>
+        <p class="verdict-condition">⚠ 但書：${v.condition}</p>
+      </div>` : ''}
+    </div>`;
+}
+
+// ═══════════════════════════════════════
+// 主流程
+// ═══════════════════════════════════════
+const LOADING_STEPS = [
+  '拆解公司名筆畫五行中...',
+  '推算天格人格地格...',
+  '查詢今日天干地支...',
+  '計算五行生剋關係...',
+  '對應大盤氣場...',
+  '三千年易經正在發威...',
+  '天機即將揭曉！',
+];
+
+let stepTimer, guaTimer;
+const ALL_GUA = ['䷀','䷁','䷂','䷃','䷄','䷅','䷆','䷇','䷈','䷉','䷊','䷋','䷌','䷍','䷎','䷏','䷐','䷑','䷒','䷓','䷔','䷕','䷖','䷗','䷘','䷙','䷚','䷛','䷜','䷝','䷞','䷟','䷠','䷡','䷢','䷣','䷤','䷥','䷦','䷧','䷨','䷩','䷪','䷫','䷬','䷭','䷮','䷯','䷰','䷱','䷲','䷳','䷴','䷵','䷶','䷷','䷸','䷹','䷺','䷻','䷼','䷽','䷾','䷿'];
+let guaIdx = 0;
+async function startFortune(){
+  const raw = document.getElementById('stockInput').value.trim();
+  if(!raw){ alert('請輸入股票名稱，例如：台積電、鴻海'); return; }
+  const code = normalizeInput(raw);
+
+  document.getElementById('result').style.display='none';
+  const ld = document.getElementById('loading');
+  ld.style.display='block';
+
+  // 輪盤卦象動畫
+  guaIdx = 0;
+  clearInterval(guaTimer);
+  guaTimer = setInterval(()=>{
+    guaIdx = (guaIdx + 1) % ALL_GUA.length;
+    const el = document.getElementById('wheelGua');
+    if(el) el.textContent = ALL_GUA[guaIdx];
+  }, 80);
+
+  let si=0;
+  document.getElementById('loadText').textContent='天師正在燃香卜卦';
+  document.getElementById('loadStep').textContent=LOADING_STEPS[0];
+  clearInterval(stepTimer);
+  stepTimer = setInterval(()=>{
+    si++;
+    if(si<LOADING_STEPS.length) document.getElementById('loadStep').textContent=LOADING_STEPS[si];
+  },380);
+
+  // 同時抓大盤數據和個股數據（不阻塞動畫）
+  const stockPromise  = fetchStockInfo(code);
+  const marketPromise = fetchMarketData();
+
+  await new Promise(r => setTimeout(r, 2800));
+
+  clearInterval(stepTimer);
+  clearInterval(guaTimer);
+  const finalGua = ALL_GUA[code.charCodeAt(0) % ALL_GUA.length];
+  const el = document.getElementById('wheelGua');
+  if(el) el.textContent = finalGua;
+  ld.style.display='none';
+
+  const stock = await stockPromise;
+  await marketPromise; // 確保大盤數據已更新到 MARKET_CACHE
+  renderResult(stock, code);
+}
+
+function renderResult(stock, code){
+  try {
+  // 動態計算姓名學（支援任何漢字）
+  const chars = stock.chars.length > 0
+    ? stock.chars
+    : [...stock.name].filter(c => /[\u4e00-\u9fff]/.test(c));
+
+  // 若連中文字都沒有（純英數代號），用代號字元代替
+  const safeChars = chars.length > 0 ? chars : [stock.name[0] || '股', stock.name[1] || '票'];
+  const charData = safeChars.map(c => getCharData(c));
+  const totalStrokes = charData.reduce((a,b)=>a+b.strokes,0);
+
+  // 三才格局
+  const tian = charData[0].strokes + 1;
+  const ren = charData.length>=2 ? charData[0].strokes+charData[1].strokes : charData[0].strokes;
+  const di = charData.length>=2 ? charData[charData.length-1].strokes+1 : charData[0].strokes+1;
+  const zong = totalStrokes+1;
+  const nameData = {tian, ren, di, zong, companyEl: charData[0].element};
+
+  // 公司主五行（取第一個字）
+  const companyElement = charData[0].element;
+
+  // 今日干支
+  const ganzhi = getGanZhi();
+  const wuxing = wuxingRelation(ganzhi.element, companyElement);
+
+  // 大盤情境（三個維度各自用不同的天象）
+  const market      = getTodayMarket();
+  const weekMarket  = getWeekMarket();
+  const monthMarket = getMonthMarket();
+
+  // 整體命格
+  const tianName = geName(tian);
+  const zongLuck = geLuck(geName(zong));
+  const verdictText = market.tone==='靜觀其變'?'今日宜守，靜觀其變': zongLuck.cls==='tl-great'?'命格：大富大貴局':'命格：穩中求進';
+  const verdictCls = market.tone==='靜觀其變'?'v-caution': zongLuck.cls==='tl-great'?'v-great':'v-good';
+
+  // Render stock header（不顯示漲跌幅）
+  document.getElementById('rStockName').textContent=`${stock.name}（${code}）`;
+  document.getElementById('rStockTag').textContent=stock.tag;
+  const v=document.getElementById('rVerdict');
+  v.textContent=verdictText; v.className='stock-verdict '+verdictCls;
+
+  // Render name chars（動態計算）
+  document.getElementById('nameChars').innerHTML=safeChars.map((c,i)=>`
+    <div class="name-char">
+      <span class="char-glyph">${c}</span>
+      <p class="char-strokes">${charData[i].strokes} 畫</p>
+      <span class="element-pill ${ELEMENT_CLASS[charData[i].element]}">五行：${ELEMENT_NAMES[charData[i].element]}</span>
+      <p class="char-meaning">${charData[i].meaning}</p>
+    </div>`).join('');
+
+  // Render talent grid
+  const talents=[
+    {label:'天格',num:tian},{label:'人格',num:ren},
+    {label:'地格',num:di},{label:'總格',num:zong}
+  ];
+  document.getElementById('talentGrid').innerHTML=talents.map(t=>{
+    const n=geName(t.num),l=geLuck(n);
+    return `<div class="talent-cell">
+      <p class="talent-label">${t.label}</p>
+      <p class="talent-num">${t.num}</p>
+      <p class="talent-name">${n}</p>
+      <span class="talent-luck ${l.cls}">${l.text}</span>
+    </div>`;
+  }).join('');
+
+  // 看圖說故事：解讀今日行情
+  const chart = readTodayChart(stock);
+
+  // 更新 data grid 加入今日行情信號
+  document.getElementById('dataGrid').innerHTML=`
+    <div class="data-cell"><p class="data-label">今日干支</p><p class="data-val">${ganzhi.text}</p></div>
+    <div class="data-cell"><p class="data-label">五行生剋</p><p class="data-val ${wuxing.luck==='大吉'?'bull':wuxing.luck==='注意'?'bear':''}">${wuxing.text}</p></div>
+    <div class="data-cell"><p class="data-label">今日氣象</p><p class="data-val ${chart.priceCls==='s-bull'?'bull':chart.priceCls==='s-bear'?'bear':''}" style="font-size:11px">${chart.priceSignal}</p></div>
+    <div class="data-cell"><p class="data-label">天色</p><p class="data-val ${market.tone==='積極出擊'?'bull':market.tone==='靜觀其變'?'bear':''}">${market.icon} ${market.tone}</p></div>`;
+
+  // Generate fortune panels
+  const periods=['tomorrow','week','month'];
+  const markets=[market, weekMarket, monthMarket];
+  periods.forEach((p,i)=>{
+    const m = markets[i];
+    const c=buildFortune(stock,nameData,ganzhi,wuxing,m,p,chart);
+    // 星數根據命格評分決定，大盤天色只加減半顆
+    const verdictScore = {
+      '建議積極布局':5, '建議小試':4, '可酌量介入':3,
+      '謹慎觀望':3, '建議減持':2, '建議暫時出場':1
+    }[c.verdict?.action] || 3;
+    const marketBonus = m.tone === '積極出擊' ? 0.5
+                      : m.tone === '靜觀其變' ? -0.5 : 0;
+    const finalStars = Math.min(5, Math.max(1, Math.round(verdictScore + marketBonus)));
+    c.stars = '★'.repeat(finalStars) + '☆'.repeat(5 - finalStars);
+    document.getElementById('tab'+i).innerHTML=renderFortunePanel(c);
+  });
+
+  document.getElementById('result').style.display='block';
+  swTab(0,document.querySelectorAll('.tab')[0]);
+
+  } catch(err) {
+    console.error('renderResult error:', err.message, err.stack);
+    // 天師遇到未知股票，顯示友善錯誤訊息
+    document.getElementById('loading').style.display='none';
+    document.getElementById('result').style.display='block';
+    document.getElementById('rStockName').textContent = `${stock.name}（${code}）`;
+    document.getElementById('rStockTag').textContent = '天師正在補充此股資料，請稍後再試';
+    const v = document.getElementById('rVerdict');
+    v.textContent = '命格推算中'; v.className = 'stock-verdict v-caution';
+    document.getElementById('nameChars').innerHTML = `<div style="padding:1rem;color:var(--gold-light);font-family:'Noto Serif TC',serif;font-size:14px;line-height:2">天師已收到此股卦象申請，正在翻閱古籍補充命格資料。<br/>目前可查詢：台積電(2330)、聯發科(2454)、鴻海(2317)、廣達(2382)、富邦金(2881)、國泰永續高股息(00878)、元大台灣50(0050)</div>`;
+    document.getElementById('talentGrid').innerHTML='';
+    document.getElementById('dataGrid').innerHTML='';
+    ['tab0','tab1','tab2'].forEach(id=>document.getElementById(id).innerHTML='');
+  }
+}
+
+function swTab(idx,btn){
+  [0,1,2].forEach(i=>{
+    document.getElementById('tab'+i).classList.toggle('show',i===idx);
+  });
+  document.querySelectorAll('.tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+}
+
+// ═══════════════════════════════════════
+// 初始化大盤顯示
+// ═══════════════════════════════════════
+(function initMood(){
+  // 先用備援顯示
+  function renderMoodBanner(m) {
+    const banner = document.getElementById('moodBanner');
+    banner.className = 'mood-banner sky-'+m.sky;
+    document.getElementById('moodIcon').textContent  = m.icon;
+    document.getElementById('moodLabel').textContent = m.title;
+    document.getElementById('moodDesc').textContent  = m.desc;
+    const tone = document.getElementById('moodTone');
+    tone.textContent = m.tone;
+    tone.className   = 'mood-sky-tone '+m.toneCls;
+  }
+
+  // 先顯示備援
+  renderMoodBanner(getTodayMarket());
+
+  // 非同步抓真實數據後更新
+  fetchMarketData().then(() => {
+    renderMoodBanner(getTodayMarket());
+  }).catch(() => {});
+})();
+
+// Enter key
+document.getElementById('stockInput').addEventListener('keydown',e=>{ if(e.key==='Enter') startFortune(); });
+</script>
+</body>
+</html>
