@@ -535,9 +535,8 @@ body::before {
 
 <script>
 // ═══════════════════════════════════════
-// Fugle API 設定（申請後填入）
+// 使用證交所官方 OpenAPI，無需 API Key
 // ═══════════════════════════════════════
-const FUGLE_API_KEY = 'YOUR_FUGLE_API_KEY'; // 在 https://developer.fugle.tw 申請
 
 // ═══════════════════════════════════════
 // 股票名稱快取（動態從 API 取得後存這裡）
@@ -710,112 +709,94 @@ async function generateStockTag(stockName, code) {
 async function fetchStockInfo(code) {
   if(STOCK_CACHE[code]) return STOCK_CACHE[code];
 
-  const headers = { 'X-API-KEY': FUGLE_API_KEY };
-
-  // 判斷是否在交易時間內（09:00–13:30 台灣時間）
-  const now = new Date();
-  const tw = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Taipei' }));
-  const h = tw.getHours(), m = tw.getMinutes();
-  const isMarketHours = (h > 9 || (h === 9 && m >= 0)) && (h < 13 || (h === 13 && m <= 35));
-  const isWeekday = tw.getDay() >= 1 && tw.getDay() <= 5;
-  const inSession = isWeekday && isMarketHours;
-
   try {
+    // TWSE 上市股票（無需 API Key，完全免費）
+    const res = await fetch(
+      `https://query.twse.com.tw/exchangeReport/STOCK_DAY?response=json&stockNo=${code}`,
+      { headers: { 'Accept': 'application/json' } }
+    );
+
     let d = null;
 
-    // 盤中：用 intraday/quote
-    if(inSession) {
-      const res = await fetch(
-        `https://api.fugle.tw/marketdata/v1.0/stock/intraday/quote/${code}`,
-        { headers }
-      );
-      if(res.ok) d = await res.json();
+    if(res.ok) {
+      const json = await res.json();
+      // TWSE 回傳格式：data 陣列，最後一筆是最近交易日
+      if(json.data && json.data.length > 0) {
+        const last = json.data[json.data.length - 1];
+        // 欄位：[日期, 成交股數, 成交金額, 開盤價, 最高價, 最低價, 收盤價, 漲跌, 成交筆數]
+        const close  = parseFloat(last[6].replace(/,/g,'')) || 0;
+        const open   = parseFloat(last[3].replace(/,/g,'')) || 0;
+        const high   = parseFloat(last[4].replace(/,/g,'')) || 0;
+        const low    = parseFloat(last[5].replace(/,/g,'')) || 0;
+        const change = parseFloat(last[7].replace(/,/g,'').replace('X','')) || 0;
+        const vol    = parseInt(last[1].replace(/,/g,'')) || 0;
+        d = { close, open, high, low, change, changePct: close > 0 ? (change/close*100) : 0, volume: vol };
+      }
     }
 
-    // 非盤中或 intraday 失敗：改用 intraday/candles 抓最近一日收盤資料
+    // 上市找不到，試上櫃（OTC）
     if(!d) {
-      const today = new Date().toISOString().split('T')[0];
       const res2 = await fetch(
-        `https://api.fugle.tw/marketdata/v1.0/stock/intraday/candles/${code}?timeframe=D`,
-        { headers }
+        `https://www.tpex.org.tw/web/stock/aftertrading/daily_trading_info/st43_result.php?l=zh-tw&o=json&s=${code}`,
+        { headers: { 'Accept': 'application/json' } }
       );
       if(res2.ok) {
-        const candles = await res2.json();
-        // 取最新一筆
-        const last = candles.data?.[candles.data.length - 1] || candles;
-        if(last && (last.close || last.closePrice)) {
-          d = {
-            name: candles.symbol || code,
-            closePrice: last.close || last.closePrice || 0,
-            openPrice:  last.open  || 0,
-            highPrice:  last.high  || 0,
-            lowPrice:   last.low   || 0,
-            changePercent: last.changePercent || 0,
-            change: last.change || 0,
-            tradeVolume: last.volume || 0,
-          };
+        const json2 = await res2.json();
+        if(json2.aaData && json2.aaData.length > 0) {
+          const last = json2.aaData[json2.aaData.length - 1];
+          const close  = parseFloat(last[6].replace(/,/g,'')) || 0;
+          const open   = parseFloat(last[3].replace(/,/g,'')) || 0;
+          const high   = parseFloat(last[4].replace(/,/g,'')) || 0;
+          const low    = parseFloat(last[5].replace(/,/g,'')) || 0;
+          const change = parseFloat(last[7].replace(/,/g,'')) || 0;
+          const vol    = parseInt(last[1].replace(/,/g,'')) || 0;
+          d = { close, open, high, low, change, changePct: close > 0 ? (change/close*100) : 0, volume: vol };
         }
       }
     }
 
-    // 還是沒資料：用 intraday/quote 不管時段強制試一次
-    if(!d) {
-      const res3 = await fetch(
-        `https://api.fugle.tw/marketdata/v1.0/stock/intraday/quote/${code}`,
-        { headers }
-      );
-      if(res3.ok) d = await res3.json();
-    }
-
     if(!d) throw new Error('查無此股票資料');
 
-    // 名稱備援：API > 離線股票表 > CODE_TO_NAME 反查 > 代號
+    // 名稱備援
     const fallbackName = OFFLINE_STOCKS[code]?.name || CODE_TO_NAME[code] || code;
-    const stockName = (d.name && /[\u4e00-\u9fff]/.test(d.name)) ? d.name : fallbackName;
+    const stockName = fallbackName;
 
-    const vol    = d.total?.tradeVolume || d.tradeVolume || 0;
-    const volBid = d.total?.tradeVolumeAtBid || 0;
-    const volAsk = d.total?.tradeVolumeAtAsk || 0;
+    const avgVol = OFFLINE_STOCKS[code]?.avgVolume || d.volume || 1;
 
-    // 先組基本 info，tag 稍後補上
     const info = {
       code,
       name:       stockName,
-      price:      d.closePrice || d.lastPrice || d.close || 0,
-      openPrice:  d.openPrice  || d.open  || 0,
-      highPrice:  d.highPrice  || d.high  || 0,
-      lowPrice:   d.lowPrice   || d.low   || 0,
-      change:     d.change     || 0,
-      changePct:  d.changePercent || d.changeRate || 0,
-      amplitude:  d.amplitude  || 0,
-      volume:     vol,
-      avgVolume:  d.avgVolume30d || vol || 1,
-      volBid,
-      volAsk,
-      high52w:    d.fiftyTwoWeekHigh || 0,
-      low52w:     d.fiftyTwoWeekLow  || 0,
+      price:      d.close,
+      openPrice:  d.open,
+      highPrice:  d.high,
+      lowPrice:   d.low,
+      change:     d.change,
+      changePct:  d.changePct,
+      amplitude:  d.close > 0 ? ((d.high - d.low) / d.close * 100) : 0,
+      volume:     d.volume,
+      avgVolume:  avgVol,
+      volBid:     Math.floor(d.volume * 0.52), // TWSE 無外盤資料，用比例估算
+      volAsk:     Math.floor(d.volume * 0.48),
+      high52w:    0,
+      low52w:     0,
       tag:  STOCK_TAGS[code] || `${stockName} · 天師正在研究此股命格`,
       chars: [...stockName].filter(c => /[\u4e00-\u9fff]/.test(c)),
     };
 
-    // 若沒有預設標語，用 Claude API 動態生成
+    // 動態生成標語
     if(!STOCK_TAGS[code]) {
       generateStockTag(stockName, code).then(tag => {
         info.tag = tag;
-        // 更新快取中的 tag
         if(STOCK_CACHE[code]) STOCK_CACHE[code].tag = tag;
-        // 更新畫面上正在顯示的標語（如果目前就是這檔）
         const tagEl = document.getElementById('rStockTag');
-        if(tagEl && tagEl.textContent.includes('天師正在研究')) {
-          tagEl.textContent = tag;
-        }
+        if(tagEl && tagEl.textContent.includes('天師正在研究')) tagEl.textContent = tag;
       });
     }
 
     STOCK_CACHE[code] = info;
     return info;
   } catch(e) {
-    console.warn('Fugle API 失敗，使用離線模式：', e.message);
+    console.warn('TWSE API 失敗，使用離線模式：', e.message);
     return getOfflineStock(code);
   }
 }
@@ -1243,46 +1224,48 @@ function pctToMood(tse, otc) {
 
 async function fetchMarketData() {
   const now = Date.now();
-  // 快取 5 分鐘
   if(MARKET_CACHE.lastFetch && now - MARKET_CACHE.lastFetch < 300000 && MARKET_CACHE.today) {
     return MARKET_CACHE;
   }
 
-  const headers = { 'X-API-KEY': FUGLE_API_KEY };
-
   try {
-    // 同時抓加權指數（IX0001）和 OTC（IX0043）
-    const [tseRes, otcRes] = await Promise.all([
-      fetch('https://api.fugle.tw/marketdata/v1.0/stock/intraday/quote/IX0001', { headers }),
-      fetch('https://api.fugle.tw/marketdata/v1.0/stock/intraday/quote/IX0043', { headers }),
-    ]);
+    // TWSE 加權指數（代號 Y9999）
+    const res = await fetch(
+      'https://query.twse.com.tw/exchangeReport/STOCK_DAY?response=json&stockNo=Y9999',
+      { headers: { 'Accept': 'application/json' } }
+    );
 
-    const tseData = tseRes.ok ? await tseRes.json() : null;
-    const otcData = otcRes.ok ? await otcRes.json() : null;
+    if(res.ok) {
+      const json = await res.json();
+      if(json.data && json.data.length >= 2) {
+        const last = json.data[json.data.length - 1];
+        const prev = json.data[json.data.length - 2];
+        const closeToday = parseFloat(last[6].replace(/,/g,'')) || 0;
+        const closePrev  = parseFloat(prev[6].replace(/,/g,'')) || 0;
+        const tsePct = closePrev > 0 ? ((closeToday - closePrev) / closePrev * 100) : 0;
 
-    const tsePct   = tseData?.changePercent || 0;
-    const otcPct   = otcData?.changePercent || 0;
+        // 本週：取本月最早一筆跟今日比
+        const firstClose = parseFloat(json.data[0][6].replace(/,/g,'')) || closeToday;
+        const tseMonthPct = firstClose > 0 ? ((closeToday - firstClose) / firstClose * 100) : 0;
 
-    // 週漲跌：用 52 週高低點位置估算（簡化版）
-    const tseWeekPct  = tseData?.weekChangePercent || tsePct * 2.5 || 0;
-    const tseMonthPct = tseData?.monthChangePercent || tsePct * 10 || 0;
+        // OTC 用上市走勢估算（簡化）
+        const otcPct = tsePct * 0.9;
 
-    MARKET_CACHE.today = pctToMood(tsePct, otcPct);
-    MARKET_CACHE.week  = pctToMood(tseWeekPct / 2.5, otcPct);
-    MARKET_CACHE.month = pctToMood(tseMonthPct / 10, otcPct);
-    MARKET_CACHE.tsePct   = tsePct;
-    MARKET_CACHE.otcPct   = otcPct;
-    MARKET_CACHE.lastFetch = now;
-
-    return MARKET_CACHE;
+        MARKET_CACHE.today = pctToMood(tsePct, otcPct);
+        MARKET_CACHE.week  = pctToMood(tsePct * 0.6, otcPct * 0.6);
+        MARKET_CACHE.month = pctToMood(tseMonthPct, tseMonthPct * 0.9);
+        MARKET_CACHE.lastFetch = now;
+        return MARKET_CACHE;
+      }
+    }
+    throw new Error('TWSE 大盤資料取得失敗');
   } catch(e) {
     console.warn('大盤數據抓取失敗，使用備援：', e.message);
-    // 備援：用星期幾模擬
     const day = new Date().getDay();
     const idx = [1,0,3,2,1][day] || 0;
     MARKET_CACHE.today = MARKET_MOODS[idx];
     MARKET_CACHE.week  = MARKET_MOODS[idx];
-    MARKET_CACHE.month = MARKET_MOODS[1]; // 預設中性
+    MARKET_CACHE.month = MARKET_MOODS[1];
     MARKET_CACHE.lastFetch = now;
     return MARKET_CACHE;
   }
