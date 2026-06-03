@@ -537,7 +537,7 @@ body::before {
 // ═══════════════════════════════════════
 // Fugle API 設定（申請後填入）
 // ═══════════════════════════════════════
-const FUGLE_API_KEY = 'YWI4MDE1ZmMtODlkZS00NTIyLWIwODctYzE1NjMwY2Q3ZjVlIGZmNGM4ODQzLWQ4ODktNGQ3OC1iMGI0LTJhNTJlODE1ODIxMA=='; // 在 https://developer.fugle.tw 申請
+const FUGLE_API_KEY = 'YOUR_FUGLE_API_KEY'; // 在 https://developer.fugle.tw 申請
 
 // ═══════════════════════════════════════
 // 股票名稱快取（動態從 API 取得後存這裡）
@@ -732,30 +732,39 @@ async function fetchStockInfo(code) {
       if(res.ok) d = await res.json();
     }
 
-    // 非盤中或 intraday 失敗：改用 snapshot
+    // 非盤中或 intraday 失敗：改用 intraday/candles 抓最近一日收盤資料
     if(!d) {
+      const today = new Date().toISOString().split('T')[0];
       const res2 = await fetch(
-        `https://api.fugle.tw/marketdata/v1.0/stock/snapshot/quotes/TSE?symbols=${code}`,
+        `https://api.fugle.tw/marketdata/v1.0/stock/intraday/candles/${code}?timeframe=D`,
         { headers }
       );
       if(res2.ok) {
-        const snap = await res2.json();
-        const item = snap.data?.find(s => s.symbol === code);
-        if(item) d = item;
+        const candles = await res2.json();
+        // 取最新一筆
+        const last = candles.data?.[candles.data.length - 1] || candles;
+        if(last && (last.close || last.closePrice)) {
+          d = {
+            name: candles.symbol || code,
+            closePrice: last.close || last.closePrice || 0,
+            openPrice:  last.open  || 0,
+            highPrice:  last.high  || 0,
+            lowPrice:   last.low   || 0,
+            changePercent: last.changePercent || 0,
+            change: last.change || 0,
+            tradeVolume: last.volume || 0,
+          };
+        }
       }
     }
 
-    // snapshot 也失敗：試 OTC（上櫃）
+    // 還是沒資料：用 intraday/quote 不管時段強制試一次
     if(!d) {
       const res3 = await fetch(
-        `https://api.fugle.tw/marketdata/v1.0/stock/snapshot/quotes/OTC?symbols=${code}`,
+        `https://api.fugle.tw/marketdata/v1.0/stock/intraday/quote/${code}`,
         { headers }
       );
-      if(res3.ok) {
-        const snap = await res3.json();
-        const item = snap.data?.find(s => s.symbol === code);
-        if(item) d = item;
-      }
+      if(res3.ok) d = await res3.json();
     }
 
     if(!d) throw new Error('查無此股票資料');
