@@ -843,9 +843,7 @@ async function fetchStockInfo(code) {
   try {
     // TWSE 上市股票（無需 API Key，完全免費）
     const res = await fetch(
-      `https://query.twse.com.tw/exchangeReport/STOCK_DAY?response=json&stockNo=${code}`,
-      { headers: { 'Accept': 'application/json' } }
-    );
+      `/api/stock?stockNo=${code}`
 
     let d = null;
 
